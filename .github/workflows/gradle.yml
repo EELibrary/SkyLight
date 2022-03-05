@@ -25,5 +25,20 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
-    - name: Build with Gradle
+    - name: Setup \ GenPatches and build
       run: bash gradlew setup genPatches build
+    - name: capture build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Artifacts
+        path: build/distributions/
+    - name: Automatic Releases
+      uses: marvinpinto/action-automatic-releases@v1.2.1
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "Auto-Build"
+        prerelease: false
+        title: "AutoBuild"
+        files: |
+          build/distributions/*.jar 
+     
