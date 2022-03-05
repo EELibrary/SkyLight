@@ -1,0 +1,22 @@
+--- ../src-base/minecraft/net/minecraft/pathfinding/PathFinder.java
++++ ../src-work/minecraft/net/minecraft/pathfinding/PathFinder.java
+@@ -1,7 +1,10 @@
+ package net.minecraft.pathfinding;
+ 
+ import com.google.common.collect.Sets;
++
++import java.util.Collections;
+ import java.util.Set;
++import java.util.concurrent.ConcurrentHashMap;
+ import javax.annotation.Nullable;
+ import net.minecraft.entity.Entity;
+ import net.minecraft.entity.EntityLiving;
+@@ -11,7 +14,7 @@
+ public class PathFinder
+ {
+     private final PathHeap path = new PathHeap();
+-    private final Set<PathPoint> closedSet = Sets.<PathPoint>newHashSet();
++    private final Set<PathPoint> closedSet = ConcurrentHashMap.newKeySet();
+     private final PathPoint[] pathOptions = new PathPoint[32];
+     private final NodeProcessor nodeProcessor;
+ 

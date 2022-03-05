@@ -1,0 +1,96 @@
+--- ../src-base/minecraft/net/minecraft/util/ClassInheritanceMultiMap.java
++++ ../src-work/minecraft/net/minecraft/util/ClassInheritanceMultiMap.java
+@@ -10,14 +10,18 @@
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Set;
++import java.util.concurrent.ConcurrentHashMap;
++import java.util.concurrent.ConcurrentMap;
++import java.util.concurrent.CopyOnWriteArrayList;
+ 
+ public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
+ {
+-    private static final Set < Class<? >> ALL_KNOWN = Sets. < Class<? >> newHashSet();
+-    private final Map < Class<?>, List<T >> map = Maps. < Class<?>, List<T >> newHashMap();
+-    private final Set < Class<? >> knownKeys = Sets. < Class<? >> newIdentityHashSet();
++    // Forge: Use concurrent collection to allow creating chunks from multiple threads safely
++    private static final Set < Class<? >> ALL_KNOWN = Collections.newSetFromMap(new java.util.concurrent.ConcurrentHashMap<Class<?>, Boolean>());
++    private final ConcurrentMap< Class<?>, List<T >> map = new ConcurrentHashMap<>();
++    private final Set < Class<? >> knownKeys = Collections.synchronizedSet(Sets. < Class<? >> newIdentityHashSet());
+     private final Class<T> baseClass;
+-    private final List<T> values = Lists.<T>newArrayList();
++    private final List<T> values = new CopyOnWriteArrayList<>();
+ 
+     public ClassInheritanceMultiMap(Class<T> baseClassIn)
+     {
+@@ -31,7 +35,7 @@
+         }
+     }
+ 
+-    protected void createLookup(Class<?> clazz)
++    protected synchronized void createLookup(Class<?> clazz)
+     {
+         ALL_KNOWN.add(clazz);
+ 
+@@ -63,7 +67,7 @@
+         }
+     }
+ 
+-    public boolean add(T p_add_1_)
++    public synchronized boolean add(T p_add_1_)
+     {
+         for (Class<?> oclass : this.knownKeys)
+         {
+@@ -76,7 +80,7 @@
+         return true;
+     }
+ 
+-    private void addForClass(T value, Class<?> parentClass)
++    private synchronized void addForClass(T value, Class<?> parentClass)
+     {
+         List<T> list = (List)this.map.get(parentClass);
+ 
+@@ -90,7 +94,7 @@
+         }
+     }
+ 
+-    public boolean remove(Object p_remove_1_)
++    public synchronized boolean remove(Object p_remove_1_)
+     {
+         T t = (T)p_remove_1_;
+         boolean flag = false;
+@@ -111,7 +115,7 @@
+         return flag;
+     }
+ 
+-    public boolean contains(Object p_contains_1_)
++    public synchronized boolean contains(Object p_contains_1_)
+     {
+         return Iterators.contains(this.getByClass(p_contains_1_.getClass()).iterator(), p_contains_1_);
+     }
+@@ -122,6 +126,17 @@
+         {
+             public Iterator<S> iterator()
+             {
++                // CatServer start - Optimization from Foamfix
++                Class c = ClassInheritanceMultiMap.this.initializeClassLookup(clazz);
++                List<T> list = ClassInheritanceMultiMap.this.map.get(c);
++                if (list == null) {
++                    return Collections.emptyIterator();
++                } else {
++                    Iterator<T> iterator = list.iterator();
++                    return clazz == c ? (Iterator<S>) iterator : Iterators.filter(iterator, clazz);
++                }
++                // CatServer end
++                /*
+                 List<T> list = (List)ClassInheritanceMultiMap.this.map.get(ClassInheritanceMultiMap.this.initializeClassLookup(clazz));
+ 
+                 if (list == null)
+@@ -133,6 +148,7 @@
+                     Iterator<T> iterator = list.iterator();
+                     return Iterators.filter(iterator, clazz);
+                 }
++                */
+             }
+         };
+     }
