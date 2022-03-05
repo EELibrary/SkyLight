@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.fml.common.ModContainer;
 
@@ -41,7 +43,7 @@ public class ASMEventHandler implements IEventListener
     private static final String HANDLER_DESC = Type.getInternalName(IEventListener.class);
     private static final String HANDLER_FUNC_DESC = Type.getMethodDescriptor(IEventListener.class.getDeclaredMethods()[0]);
     private static final ASMClassLoader LOADER = new ASMClassLoader();
-    private static final HashMap<Method, Class<?>> cache = Maps.newHashMap();
+    private static final Map<Method, Class<?>> cache = new ConcurrentHashMap();
     private static final boolean GETCONTEXT = Boolean.parseBoolean(System.getProperty("fml.LogContext", "false"));
 
     private final IEventListener handler;
@@ -77,7 +79,7 @@ public class ASMEventHandler implements IEventListener
 
     @SuppressWarnings("rawtypes")
     @Override
-    public void invoke(Event event)
+    public synchronized void invoke(Event event)
     {
         if (GETCONTEXT)
             ThreadContext.put("mod", owner == null ? "" : owner.getName());
