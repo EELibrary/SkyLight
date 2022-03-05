@@ -1,19 +1,38 @@
 --- ../src-base/minecraft/net/minecraft/server/management/PlayerChunkMap.java
 +++ ../src-work/minecraft/net/minecraft/server/management/PlayerChunkMap.java
-@@ -10,9 +10,12 @@
+@@ -10,9 +10,13 @@
  import java.util.Collections;
  import java.util.Comparator;
  import java.util.Iterator;
 +import java.util.LinkedList;
  import java.util.List;
  import java.util.Set;
++import java.util.concurrent.ConcurrentHashMap;
  import javax.annotation.Nullable;
 +
 +import net.minecraft.entity.player.EntityPlayer;
  import net.minecraft.entity.player.EntityPlayerMP;
  import net.minecraft.util.math.BlockPos;
  import net.minecraft.util.math.ChunkPos;
-@@ -52,7 +55,7 @@
+@@ -38,12 +42,12 @@
+         }
+     };
+     private final WorldServer world;
+-    private final List<EntityPlayerMP> players = Lists.<EntityPlayerMP>newArrayList();
++    private final List<EntityPlayerMP> players = Collections.synchronizedList(Lists.<EntityPlayerMP>newArrayList());
+     private final Long2ObjectMap<PlayerChunkMapEntry> entryMap = new Long2ObjectOpenHashMap<PlayerChunkMapEntry>(4096);
+-    private final Set<PlayerChunkMapEntry> dirtyEntries = Sets.<PlayerChunkMapEntry>newHashSet();
+-    private final List<PlayerChunkMapEntry> pendingSendToPlayers = Lists.<PlayerChunkMapEntry>newLinkedList();
+-    private final List<PlayerChunkMapEntry> entriesWithoutChunks = Lists.<PlayerChunkMapEntry>newLinkedList();
+-    private final List<PlayerChunkMapEntry> entries = Lists.<PlayerChunkMapEntry>newArrayList();
++    private final Set<PlayerChunkMapEntry> dirtyEntries = ConcurrentHashMap.newKeySet();
++    private final List<PlayerChunkMapEntry> pendingSendToPlayers = Collections.synchronizedList(Lists.<PlayerChunkMapEntry>newLinkedList());
++    private final List<PlayerChunkMapEntry> entriesWithoutChunks = Collections.synchronizedList(Lists.<PlayerChunkMapEntry>newLinkedList());
++    private final List<PlayerChunkMapEntry> entries = Collections.synchronizedList(Lists.<PlayerChunkMapEntry>newArrayList());
+     private int playerViewRadius;
+     private long previousTotalWorldTime;
+     private boolean sortMissingChunks = true;
+@@ -52,7 +56,7 @@
      public PlayerChunkMap(WorldServer serverWorld)
      {
          this.world = serverWorld;
@@ -22,7 +41,7 @@
      }
  
      public WorldServer getWorldServer()
-@@ -157,6 +160,12 @@
+@@ -157,6 +161,12 @@
          {
              long l = System.nanoTime() + 50000000L;
              int k = 49;
@@ -35,7 +54,7 @@
              Iterator<PlayerChunkMapEntry> iterator = this.entriesWithoutChunks.iterator();
  
              while (iterator.hasNext())
-@@ -178,13 +187,18 @@
+@@ -178,13 +188,18 @@
  
                          --k;
  
@@ -55,7 +74,7 @@
          }
  
          if (!this.pendingSendToPlayers.isEmpty())
-@@ -257,8 +271,17 @@
+@@ -257,8 +272,17 @@
          return playerchunkmapentry;
      }
  
@@ -73,7 +92,7 @@
          int i = pos.getX() >> 4;
          int j = pos.getZ() >> 4;
          PlayerChunkMapEntry playerchunkmapentry = this.getEntry(i, j);
-@@ -276,14 +299,22 @@
+@@ -276,14 +300,22 @@
          player.managedPosX = player.posX;
          player.managedPosZ = player.posZ;
  
@@ -97,7 +116,7 @@
          this.players.add(player);
          this.markSortPending();
      }
-@@ -341,6 +372,8 @@
+@@ -341,6 +373,8 @@
              int j1 = i - k;
              int k1 = j - l;
  
@@ -106,7 +125,7 @@
              if (j1 != 0 || k1 != 0)
              {
                  for (int l1 = i - i1; l1 <= i + i1; ++l1)
-@@ -349,7 +382,8 @@
+@@ -349,7 +383,8 @@
                      {
                          if (!this.overlaps(l1, i2, k, l, i1))
                          {
@@ -116,7 +135,7 @@
                          }
  
                          if (!this.overlaps(l1 - j1, i2 - k1, i, j, i1))
-@@ -367,6 +401,12 @@
+@@ -367,6 +402,12 @@
                  player.managedPosX = player.posX;
                  player.managedPosZ = player.posZ;
                  this.markSortPending();
@@ -129,7 +148,7 @@
              }
          }
      }
-@@ -443,11 +483,13 @@
+@@ -443,11 +484,13 @@
  
      public void entryChanged(PlayerChunkMapEntry entry)
      {
@@ -143,7 +162,7 @@
          ChunkPos chunkpos = entry.getPos();
          long i = getIndex(chunkpos.x, chunkpos.z);
          entry.updateChunkInhabitedTime();
-@@ -458,9 +500,78 @@
+@@ -458,9 +501,78 @@
          this.entriesWithoutChunks.remove(entry);
          Chunk chunk = entry.getChunk();
  

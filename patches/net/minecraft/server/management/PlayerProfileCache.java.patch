@@ -1,19 +1,27 @@
 --- ../src-base/minecraft/net/minecraft/server/management/PlayerProfileCache.java
 +++ ../src-work/minecraft/net/minecraft/server/management/PlayerProfileCache.java
-@@ -45,9 +45,9 @@
+@@ -36,6 +36,7 @@
+ import java.util.Locale;
+ import java.util.Map;
+ import java.util.UUID;
++import java.util.concurrent.ConcurrentHashMap;
+ import javax.annotation.Nullable;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.util.JsonUtils;
+@@ -45,9 +46,9 @@
  {
      public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
      private static boolean onlineMode;
 -    private final Map<String, PlayerProfileCache.ProfileEntry> usernameToProfileEntryMap = Maps.<String, PlayerProfileCache.ProfileEntry>newHashMap();
 -    private final Map<UUID, PlayerProfileCache.ProfileEntry> uuidToProfileEntryMap = Maps.<UUID, PlayerProfileCache.ProfileEntry>newHashMap();
 -    private final Deque<GameProfile> gameProfiles = Lists.<GameProfile>newLinkedList();
-+    private final Map<String, ProfileEntry> usernameToProfileEntryMap = Maps.<String, ProfileEntry>newHashMap();
-+    private final Map<UUID, ProfileEntry> uuidToProfileEntryMap = Maps.<UUID, ProfileEntry>newHashMap();
++    private final Map<String, ProfileEntry> usernameToProfileEntryMap = new ConcurrentHashMap<>();
++    private final Map<UUID, ProfileEntry> uuidToProfileEntryMap = new ConcurrentHashMap<>();
 +    private final Deque<GameProfile> gameProfiles = new java.util.concurrent.LinkedBlockingDeque<>();
      private final GameProfileRepository profileRepo;
      protected final Gson gson;
      private final File usercacheFile;
-@@ -55,7 +55,7 @@
+@@ -55,7 +56,7 @@
      {
          public Type[] getActualTypeArguments()
          {
@@ -22,7 +30,7 @@
          }
          public Type getRawType()
          {
-@@ -72,7 +72,7 @@
+@@ -72,7 +73,7 @@
          this.profileRepo = profileRepoIn;
          this.usercacheFile = usercacheFileIn;
          GsonBuilder gsonbuilder = new GsonBuilder();
@@ -31,7 +39,7 @@
          this.gson = gsonbuilder.create();
          this.load();
      }
-@@ -91,6 +91,7 @@
+@@ -91,6 +92,7 @@
                  agameprofile[0] = null;
              }
          };
@@ -39,7 +47,7 @@
          profileRepoIn.findProfilesByNames(new String[] {name}, Agent.MINECRAFT, profilelookupcallback);
  
          if (!isOnlineMode() && agameprofile[0] == null)
-@@ -118,7 +119,7 @@
+@@ -118,7 +120,7 @@
          this.addEntry(gameProfile, (Date)null);
      }
  
@@ -48,7 +56,7 @@
      {
          UUID uuid = gameProfile.getId();
  
-@@ -131,11 +132,11 @@
+@@ -131,11 +133,11 @@
          }
  
          String s = gameProfile.getName().toLowerCase(Locale.ROOT);
@@ -64,7 +72,7 @@
              this.usernameToProfileEntryMap.remove(playerprofilecache$profileentry1.getGameProfile().getName().toLowerCase(Locale.ROOT));
              this.gameProfiles.remove(gameProfile);
          }
-@@ -143,14 +144,14 @@
+@@ -143,14 +145,14 @@
          this.usernameToProfileEntryMap.put(gameProfile.getName().toLowerCase(Locale.ROOT), playerprofilecache$profileentry);
          this.uuidToProfileEntryMap.put(uuid, playerprofilecache$profileentry);
          this.gameProfiles.addFirst(gameProfile);
@@ -82,7 +90,7 @@
  
          if (playerprofilecache$profileentry != null && (new Date()).getTime() >= playerprofilecache$profileentry.expirationDate.getTime())
          {
-@@ -177,26 +178,26 @@
+@@ -177,26 +179,26 @@
              }
          }
  
@@ -115,7 +123,7 @@
  
          if (playerprofilecache$profileentry != null)
          {
-@@ -215,14 +216,14 @@
+@@ -215,14 +217,14 @@
          try
          {
              bufferedreader = Files.newReader(this.usercacheFile, StandardCharsets.UTF_8);
@@ -132,7 +140,7 @@
                  {
                      if (playerprofilecache$profileentry != null)
                      {
-@@ -245,9 +246,16 @@
+@@ -245,9 +247,16 @@
          }
      }
  
@@ -150,7 +158,7 @@
          BufferedWriter bufferedwriter = null;
  
          try
-@@ -268,15 +276,24 @@
+@@ -268,15 +277,24 @@
          {
              IOUtils.closeQuietly((Writer)bufferedwriter);
          }
@@ -178,7 +186,7 @@
  
              if (playerprofilecache$profileentry != null)
              {
-@@ -309,13 +326,13 @@
+@@ -309,13 +327,13 @@
          }
      }
  
@@ -194,7 +202,7 @@
          {
              JsonObject jsonobject = new JsonObject();
              jsonobject.addProperty("name", p_serialize_1_.getGameProfile().getName());
-@@ -325,7 +342,7 @@
+@@ -325,7 +343,7 @@
              return jsonobject;
          }
  

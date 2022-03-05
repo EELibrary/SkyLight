@@ -1,6 +1,24 @@
 --- ../src-base/minecraft/net/minecraft/server/management/UserList.java
 +++ ../src-work/minecraft/net/minecraft/server/management/UserList.java
-@@ -59,7 +59,7 @@
+@@ -25,6 +25,8 @@
+ import java.util.Collection;
+ import java.util.List;
+ import java.util.Map;
++import java.util.concurrent.ConcurrentHashMap;
++
+ import net.minecraft.util.JsonUtils;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
+@@ -37,7 +39,7 @@
+     protected static final Logger LOGGER = LogManager.getLogger();
+     protected final Gson gson;
+     private final File saveFile;
+-    private final Map<String, V> values = Maps.<String, V>newHashMap();
++    private final Map<String, V> values = new ConcurrentHashMap<>();
+     private boolean lanServer = true;
+     private static final ParameterizedType USER_LIST_ENTRY_TYPE = new ParameterizedType()
+     {
+@@ -59,7 +61,7 @@
      {
          this.saveFile = saveFile;
          GsonBuilder gsonbuilder = (new GsonBuilder()).setPrettyPrinting();
@@ -9,7 +27,7 @@
          this.gson = gsonbuilder.create();
      }
  
-@@ -156,6 +156,10 @@
+@@ -156,6 +158,10 @@
          return this.values;
      }
  
