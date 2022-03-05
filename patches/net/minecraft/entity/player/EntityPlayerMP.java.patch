@@ -223,7 +223,7 @@
          this.interactionManager.updateBlockRemoving();
          --this.respawnInvulnerabilityTicks;
  
-@@ -323,25 +408,24 @@
+@@ -323,28 +408,27 @@
  
          this.openContainer.detectAndSendChanges();
  
@@ -233,31 +233,40 @@
              this.closeScreen();
              this.openContainer = this.inventoryContainer;
          }
- 
+-
 -        while (!this.entityRemoveQueue.isEmpty())
 -        {
-+        while (!this.entityRemoveQueue.isEmpty()) {
-             int i = Math.min(this.entityRemoveQueue.size(), Integer.MAX_VALUE);
-             int[] aint = new int[i];
+-            int i = Math.min(this.entityRemoveQueue.size(), Integer.MAX_VALUE);
+-            int[] aint = new int[i];
 -            Iterator<Integer> iterator = this.entityRemoveQueue.iterator();
-+            //Iterator<Integer> iterator = this.entityRemoveQueue.iterator();
-             int j = 0;
+-            int j = 0;
 -
 -            while (iterator.hasNext() && j < i)
 -            {
 -                aint[j++] = ((Integer)iterator.next()).intValue();
 -                iterator.remove();
-+            for (int p = 0; p < this.entityRemoveQueue.size(); i++) {
-+                aint[j++] = this.entityRemoveQueue.get(p);
-+                this.entityRemoveQueue.remove(p);
-+                if (j >= i) {
-+                    break;
++        synchronized(this.entityRemoveQueue){
++            while (!this.entityRemoveQueue.isEmpty()) {
++                int i = Math.min(this.entityRemoveQueue.size(), Integer.MAX_VALUE);
++                int[] aint = new int[i];
++                //Iterator<Integer> iterator = this.entityRemoveQueue.iterator();
++                int j = 0;
++                for (int p = 0; p < this.entityRemoveQueue.size(); i++) {
++                    aint[j++] = this.entityRemoveQueue.get(p);
++                    this.entityRemoveQueue.remove(p);
++                    if (j >= i) {
++                        break;
++                    }
 +                }
++                this.connection.sendPacket(new SPacketDestroyEntities(aint));
              }
 -
-             this.connection.sendPacket(new SPacketDestroyEntities(aint));
+-            this.connection.sendPacket(new SPacketDestroyEntities(aint));
          }
+-
+         Entity entity = this.getSpectatingEntity();
  
+         if (entity != this)
 @@ -398,7 +482,7 @@
  
              if (this.getHealth() != this.lastHealth || this.lastFoodLevel != this.foodStats.getFoodLevel() || this.foodStats.getSaturationLevel() == 0.0F != this.wasHungry)
