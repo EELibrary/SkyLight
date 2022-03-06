@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Nonnull;
 
@@ -66,6 +68,8 @@ public class EventBus implements IEventExceptionHandler
 
     public void register(Object target)
     {
+        Lock nonFairLock=new ReentrantLock(true);
+        nonFairLock.lock();
         if (listeners.containsKey(target))
         {
             return;
@@ -121,10 +125,13 @@ public class EventBus implements IEventExceptionHandler
                 }
             }
         }
+        nonFairLock.unlock();
     }
 
     private void register(Class<?> eventType, Object target, Method method, final ModContainer owner)
     {
+        Lock nonFairLock=new ReentrantLock(true);
+        nonFairLock.lock();
         try
         {
             Constructor<?> ctr = eventType.getConstructor();
@@ -158,10 +165,13 @@ public class EventBus implements IEventExceptionHandler
         {
             FMLLog.log.error("Error registering event handler: {} {} {}", owner, eventType, method, e);
         }
+        nonFairLock.unlock();
     }
 
     public void unregister(Object object)
     {
+        Lock nonFairLock=new ReentrantLock(true);
+        nonFairLock.lock();
         ArrayList<IEventListener> list = listeners.remove(object);
         if(list == null)
             return;
@@ -169,10 +179,13 @@ public class EventBus implements IEventExceptionHandler
         {
             ListenerList.unregisterAll(busID, listener);
         }
+        nonFairLock.unlock();
     }
 
     public boolean post(Event event)
     {
+        Lock nonFairLock=new ReentrantLock(true);
+        nonFairLock.lock();
         if (shutdown) return false;
 
         // CatServer start - CatAPI implement
@@ -196,6 +209,7 @@ public class EventBus implements IEventExceptionHandler
             Throwables.throwIfUnchecked(throwable);
             throw new RuntimeException(throwable);
         }
+        nonFairLock.unlock();
         return event.isCancelable() && event.isCanceled();
     }
 
