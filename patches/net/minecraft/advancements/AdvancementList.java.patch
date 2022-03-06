@@ -23,8 +23,8 @@
 -    private final Set<Advancement> nonRoots = Sets.<Advancement>newLinkedHashSet();
 -    private AdvancementList.Listener listener;
 +    public final Map<ResourceLocation, Advancement> advancements = new ConcurrentHashMap<>(); // CatServer - private -> public
-+    private final Set<Advancement> roots = Collections.synchronizedMap(Sets.<Advancement>newLinkedHashSet());
-+    private final Set<Advancement> nonRoots = Collections.synchronizedMap(Sets.<Advancement>newLinkedHashSet());
++    private final Set<Advancement> roots = Collections.synchronizedSet(Sets.<Advancement>newLinkedHashSet());
++    private final Set<Advancement> nonRoots = Collections.synchronizedSet(Sets.<Advancement>newLinkedHashSet());
 +    private Listener listener;
  
      @SideOnly(Side.CLIENT)
