@@ -1,14 +1,32 @@
 --- ../src-base/minecraft/net/minecraft/advancements/Advancement.java
 +++ ../src-work/minecraft/net/minecraft/advancements/Advancement.java
-@@ -32,6 +32,7 @@
+@@ -8,6 +8,7 @@
+ import com.google.gson.JsonSyntaxException;
+ import java.io.IOException;
+ import java.util.Arrays;
++import java.util.Collections;
+ import java.util.Map;
+ import java.util.Set;
+ import java.util.function.Function;
+@@ -30,14 +31,15 @@
+     private final ResourceLocation id;
+     private final Map<String, Criterion> criteria;
      private final String[][] requirements;
-     private final Set<Advancement> children = Sets.<Advancement>newLinkedHashSet();
+-    private final Set<Advancement> children = Sets.<Advancement>newLinkedHashSet();
++    private final Set<Advancement> children = Collections.synchronizedSet(Sets.<Advancement>newLinkedHashSet());
      private final ITextComponent displayText;
 +    public final org.bukkit.advancement.Advancement bukkit = new org.bukkit.craftbukkit.advancement.CraftAdvancement(this);
  
      public Advancement(ResourceLocation id, @Nullable Advancement parentIn, @Nullable DisplayInfo displayIn, AdvancementRewards rewardsIn, Map<String, Criterion> criteriaIn, String[][] requirementsIn)
      {
-@@ -68,9 +69,9 @@
+         this.id = id;
+         this.display = displayIn;
+-        this.criteria = ImmutableMap.copyOf(criteriaIn);
++        this.criteria = Collections.synchronizedMap(ImmutableMap.copyOf(criteriaIn));
+         this.parent = parentIn;
+         this.rewards = rewardsIn;
+         this.requirements = requirementsIn;
+@@ -68,9 +70,9 @@
          }
      }
  
@@ -20,7 +38,7 @@
      }
  
      @Nullable
-@@ -230,7 +231,7 @@
+@@ -230,7 +232,7 @@
                  return "Task Advancement{parentId=" + this.parentId + ", display=" + this.display + ", rewards=" + this.rewards + ", criteria=" + this.criteria + ", requirements=" + Arrays.deepToString(this.requirements) + '}';
              }
  
@@ -29,7 +47,7 @@
              {
                  ResourceLocation resourcelocation = json.has("parent") ? new ResourceLocation(JsonUtils.getString(json, "parent")) : null;
                  DisplayInfo displayinfo = json.has("display") ? DisplayInfo.deserialize(JsonUtils.getJsonObject(json, "display"), context) : null;
-@@ -303,11 +304,11 @@
+@@ -303,11 +305,11 @@
                          }
                      }
  
@@ -43,7 +61,7 @@
              {
                  ResourceLocation resourcelocation = buf.readBoolean() ? buf.readResourceLocation() : null;
                  DisplayInfo displayinfo = buf.readBoolean() ? DisplayInfo.read(buf) : null;
-@@ -324,7 +325,7 @@
+@@ -324,7 +326,7 @@
                      }
                  }
  
