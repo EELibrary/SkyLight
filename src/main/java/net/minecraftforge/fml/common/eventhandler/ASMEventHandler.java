@@ -76,13 +76,13 @@ public class ASMEventHandler implements IEventListener
             }
         }
     }
-
+    Lock lock1 = new ReentrantLock();
     @SuppressWarnings("rawtypes")
     @Override
     public void invoke(Event event)
     {
-        Lock lock = new ReentrantLock();
-        lock.lock();
+
+        lock1.lock();
         if (GETCONTEXT)
             ThreadContext.put("mod", owner == null ? "" : owner.getName());
         if (handler != null)
@@ -96,7 +96,7 @@ public class ASMEventHandler implements IEventListener
             }
         }
         if (GETCONTEXT) ThreadContext.remove("mod");
-        lock.unlock();
+        lock1.unlock();
     }
 
     public EventPriority getPriority()

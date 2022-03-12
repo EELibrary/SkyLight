@@ -65,11 +65,10 @@ public class EventBus implements IEventExceptionHandler
         Preconditions.checkNotNull(handler, "EventBus exception handler can not be null");
         exceptionHandler = handler;
     }
-
+    Lock lock3 = new ReentrantLock();
     public void register(Object target)
     {
-        Lock lock = new ReentrantLock();
-        lock.lock();
+        lock3.lock();
         if (listeners.containsKey(target))
         {
             return;
@@ -125,13 +124,13 @@ public class EventBus implements IEventExceptionHandler
                 }
             }
         }
-        lock.unlock();
+        lock3.unlock();
     }
-
+    Lock lock2 = new ReentrantLock();
     private void register(Class<?> eventType, Object target, Method method, final ModContainer owner)
     {
-        Lock lock = new ReentrantLock();
-        lock.lock();
+
+        lock2.lock();
         try
         {
             Constructor<?> ctr = eventType.getConstructor();
@@ -165,24 +164,23 @@ public class EventBus implements IEventExceptionHandler
         {
             FMLLog.log.error("Error registering event handler: {} {} {}", owner, eventType, method, e);
         }
-        lock.unlock();
+        lock2.unlock();
     }
-
+    Lock lock1 = new ReentrantLock();
     public void unregister(Object object) {
-        Lock lock = new ReentrantLock();
-        lock.lock();
+
+        lock1.lock();
         ArrayList<IEventListener> list = listeners.remove(object);
         if (list == null)
             return;
         for (IEventListener listener : list) {
             ListenerList.unregisterAll(busID, listener);
         }
-        lock.unlock();
+        lock1.unlock();
     }
-
+    Lock lock = new ReentrantLock();
     public boolean post(Event event)
     {
-        Lock lock = new ReentrantLock();
         lock.lock();
         if (shutdown) return false;
 
