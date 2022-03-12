@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Nonnull;
 
@@ -66,6 +68,8 @@ public class EventBus implements IEventExceptionHandler
 
     public void register(Object target)
     {
+        Lock lock = new ReentrantLock();
+        lock.lock();
         if (listeners.containsKey(target))
         {
             return;
@@ -121,10 +125,13 @@ public class EventBus implements IEventExceptionHandler
                 }
             }
         }
+        lock.unlock();
     }
 
     private void register(Class<?> eventType, Object target, Method method, final ModContainer owner)
     {
+        Lock lock = new ReentrantLock();
+        lock.lock();
         try
         {
             Constructor<?> ctr = eventType.getConstructor();
@@ -158,21 +165,25 @@ public class EventBus implements IEventExceptionHandler
         {
             FMLLog.log.error("Error registering event handler: {} {} {}", owner, eventType, method, e);
         }
+        lock.unlock();
     }
 
-    public void unregister(Object object)
-    {
+    public void unregister(Object object) {
+        Lock lock = new ReentrantLock();
+        lock.lock();
         ArrayList<IEventListener> list = listeners.remove(object);
-        if(list == null)
+        if (list == null)
             return;
-        for (IEventListener listener : list)
-        {
+        for (IEventListener listener : list) {
             ListenerList.unregisterAll(busID, listener);
         }
+        lock.unlock();
     }
 
     public boolean post(Event event)
     {
+        Lock lock = new ReentrantLock();
+        lock.lock();
         if (shutdown) return false;
 
         // CatServer start - CatAPI implement
@@ -196,6 +207,7 @@ public class EventBus implements IEventExceptionHandler
             Throwables.throwIfUnchecked(throwable);
             throw new RuntimeException(throwable);
         }
+        lock.unlock();
         return event.isCancelable() && event.isCanceled();
     }
 

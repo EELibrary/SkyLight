@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import net.minecraftforge.fml.common.ModContainer;
 
@@ -79,6 +81,8 @@ public class ASMEventHandler implements IEventListener
     @Override
     public void invoke(Event event)
     {
+        Lock lock = new ReentrantLock();
+        lock.lock();
         if (GETCONTEXT)
             ThreadContext.put("mod", owner == null ? "" : owner.getName());
         if (handler != null)
@@ -91,8 +95,8 @@ public class ASMEventHandler implements IEventListener
                 }
             }
         }
-        if (GETCONTEXT)
-            ThreadContext.remove("mod");
+        if (GETCONTEXT) ThreadContext.remove("mod");
+        lock.unlock();
     }
 
     public EventPriority getPriority()
