@@ -1,0 +1,89 @@
+--- ../src-base/minecraft/net/minecraft/client/multiplayer/WorldClient.java
++++ ../src-work/minecraft/net/minecraft/client/multiplayer/WorldClient.java
+@@ -1,6 +1,8 @@
+ package net.minecraft.client.multiplayer;
+ 
+ import com.google.common.collect.Sets;
++
++import java.util.Collections;
+ import java.util.Random;
+ import java.util.Set;
+ import javax.annotation.Nullable;
+@@ -51,7 +53,7 @@
+ {
+     private final NetHandlerPlayClient connection;
+     private ChunkProviderClient clientChunkProvider;
+-    private final Set<Entity> entityList = Sets.<Entity>newHashSet();
++    private final Set<Entity> entityList = Collections.synchronizedSet(Sets.<Entity>newHashSet());
+     private final Set<Entity> entitySpawnQueue = Sets.<Entity>newHashSet();
+     private final Minecraft mc = Minecraft.getMinecraft();
+     private final Set<ChunkPos> previousActiveChunkSet = Sets.<ChunkPos>newHashSet();
+@@ -60,17 +62,19 @@
+ 
+     public WorldClient(NetHandlerPlayClient netHandler, WorldSettings settings, int dimension, EnumDifficulty difficulty, Profiler profilerIn)
+     {
+-        super(new SaveHandlerMP(), new WorldInfo(settings, "MpServer"), DimensionType.getById(dimension).createDimension(), profilerIn, true);
++        super(new SaveHandlerMP(), new WorldInfo(settings, "MpServer"), net.minecraftforge.common.DimensionManager.createProviderFor(dimension), profilerIn, true);
+         this.ambienceTicks = this.rand.nextInt(12000);
+         this.visibleChunks = Sets.<ChunkPos>newHashSet();
+         this.connection = netHandler;
+         this.getWorldInfo().setDifficulty(difficulty);
+-        this.setSpawnPoint(new BlockPos(8, 64, 8));
+         this.provider.setWorld(this);
++        this.setSpawnPoint(new BlockPos(8, 64, 8)); //Forge: Moved below registerWorld to prevent NPE in our redirect.
+         this.chunkProvider = this.createChunkProvider();
+         this.mapStorage = new SaveDataMemoryStorage();
+         this.calculateInitialSkylight();
+         this.calculateInitialWeather();
++        this.initCapabilities();
++        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.world.WorldEvent.Load(this));
+     }
+ 
+     public void tick()
+@@ -113,7 +117,7 @@
+         return this.clientChunkProvider;
+     }
+ 
+-    protected boolean isChunkLoaded(int x, int z, boolean allowEmpty)
++    public boolean isChunkLoaded(int x, int z, boolean allowEmpty)
+     {
+         return allowEmpty || !this.getChunkProvider().provideChunk(x, z).isEmpty();
+     }
+@@ -245,21 +249,19 @@
+     public void addEntityToWorld(int entityID, Entity entityToSpawn)
+     {
+         Entity entity = this.getEntityByID(entityID);
+-
+         if (entity != null)
+         {
+             this.removeEntity(entity);
+         }
+-
+         this.entityList.add(entityToSpawn);
+         entityToSpawn.setEntityId(entityID);
+-
+         if (!this.spawnEntity(entityToSpawn))
+         {
+             this.entitySpawnQueue.add(entityToSpawn);
+         }
+-
+-        this.entitiesById.addKey(entityID, entityToSpawn);
++        synchronized (this.entitiesById){
++            this.entitiesById.addKey(entityID, entityToSpawn);
++        }
+     }
+ 
+     @Nullable
+@@ -270,8 +272,10 @@
+ 
+     public Entity removeEntityFromWorld(int entityID)
+     {
+-        Entity entity = this.entitiesById.removeObject(entityID);
+-
++        Entity entity = null;
++        synchronized (this.entitiesById){
++            entity = this.entitiesById.removeObject(entityID);
++        }
+         if (entity != null)
+         {
+             this.entityList.remove(entity);
