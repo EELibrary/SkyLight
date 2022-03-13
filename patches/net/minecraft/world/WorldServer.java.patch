@@ -69,9 +69,10 @@
 +    public EntityTracker entityTracker;
      private final PlayerChunkMap playerChunkMap;
 -    private final Set<NextTickListEntry> pendingTickListEntriesHashSet = Sets.<NextTickListEntry>newHashSet();
-+    private final Set<NextTickListEntry> pendingTickListEntriesHashSet = Collections.synchronizedSet(Sets.<NextTickListEntry>newHashSet());
-     private final TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new TreeSet<NextTickListEntry>();
+-    private final TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new TreeSet<NextTickListEntry>();
 -    private final Map<UUID, Entity> entitiesByUuid = Maps.<UUID, Entity>newHashMap();
++    private final Set<NextTickListEntry> pendingTickListEntriesHashSet = Collections.synchronizedSet(Sets.<NextTickListEntry>newHashSet());
++    private final TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new TreeSet<>();
 +    private final Map<UUID, Entity> entitiesByUuid = Collections.synchronizedMap(Maps.<UUID, Entity>newHashMap());
      public boolean disableLevelSaving;
      private boolean allPlayersSleeping;
@@ -495,8 +496,8 @@
 +            if (!this.pendingTickListEntriesHashSet.contains(nextticklistentry)) {
                  this.pendingTickListEntriesHashSet.add(nextticklistentry);
 -                this.pendingTickListEntriesTreeSet.add(nextticklistentry);
-+                synchronized (this.pendingTickListEntriesTreeSet){
-+                 this.pendingTickListEntriesTreeSet.add(nextticklistentry);
++                synchronized (this) {
++                    this.pendingTickListEntriesTreeSet.add(nextticklistentry);
 +                }
              }
          }
@@ -513,7 +514,7 @@
          {
              this.pendingTickListEntriesHashSet.add(nextticklistentry);
 -            this.pendingTickListEntriesTreeSet.add(nextticklistentry);
-+            synchronized (this.pendingTickListEntriesTreeSet) {
++            synchronized (this) {
 +                this.pendingTickListEntriesTreeSet.add(nextticklistentry);
 +            }
          }
@@ -538,20 +539,26 @@
      }
  
      protected void tickPlayers()
-@@ -668,6 +812,7 @@
+@@ -667,30 +811,37 @@
+         else
          {
              int i = this.pendingTickListEntriesTreeSet.size();
- 
+-
 +            // TODO: Check if this condition should be always false(HashTreeSet from CB related)
              if (i != this.pendingTickListEntriesHashSet.size())
              {
-                 throw new IllegalStateException("TickNextTick list out of synch");
-@@ -676,7 +821,14 @@
+-                throw new IllegalStateException("TickNextTick list out of synch");
++                LOGGER.warn("TickNextTick list out of synch");
++                 //If i > pendingTickListEntriesHashSet.size() this action won't be executed
++                 return true;
++                 //Do not throw this exception
++                 //throw new IllegalStateException("TickNextTick list out of synch");
+             }
+             else
              {
                  if (i > 65536)
                  {
 -                    i = 65536;
-+                    // i = 65536;
 +                    // CraftBukkit start - If the server has too much to process over time, try to alleviate that
 +                    if (i > 20 * 65536) {
 +                        i = i / 20;
@@ -560,21 +567,28 @@
 +                    }
 +                    // CraftBukkit end
                  }
- 
+-
                  this.profiler.startSection("cleaning");
-@@ -689,8 +841,9 @@
-                     {
+-
+-                for (int j = 0; j < i; ++j)
+-                {
++                for (int j = 0; j < i; ++j) {
+                     NextTickListEntry nextticklistentry = this.pendingTickListEntriesTreeSet.first();
+ 
+-                    if (!runAllPending && nextticklistentry.scheduledTime > this.worldInfo.getWorldTotalTime())
+-                    {
++                    if (!runAllPending && nextticklistentry.scheduledTime > this.worldInfo.getWorldTotalTime()) {
                          break;
                      }
 -
 -                    this.pendingTickListEntriesTreeSet.remove(nextticklistentry);
-+                    synchronized (this.pendingTickListEntriesTreeSet) {
++                    synchronized (this) {
 +                        this.pendingTickListEntriesTreeSet.remove(nextticklistentry);
 +                    }
                      this.pendingTickListEntriesHashSet.remove(nextticklistentry);
                      this.pendingTickListEntriesThisTick.add(nextticklistentry);
                  }
-@@ -703,6 +856,9 @@
+@@ -703,6 +854,9 @@
                  {
                      NextTickListEntry nextticklistentry1 = iterator.next();
                      iterator.remove();
@@ -584,6 +598,17 @@
                      int k = 0;
  
                      if (this.isAreaLoaded(nextticklistentry1.position.add(0, 0, 0), nextticklistentry1.position.add(0, 0, 0)))
+@@ -759,7 +913,9 @@
+ 
+             if (i == 0)
+             {
+-                iterator = this.pendingTickListEntriesTreeSet.iterator();
++                synchronized (this) {
++                    iterator = this.pendingTickListEntriesTreeSet.iterator();
++                }
+             }
+             else
+             {
 @@ -796,6 +952,7 @@
          return list;
      }
