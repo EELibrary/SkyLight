@@ -28,6 +28,7 @@ public class ForgeCommand extends CommandTreeBase
 {
     public ForgeCommand()
     {
+        super.addSubcommand(new CommandThreads());
         super.addSubcommand(new CommandTps());
         super.addSubcommand(new CommandTrack());
         super.addSubcommand(new CommandGenerate());

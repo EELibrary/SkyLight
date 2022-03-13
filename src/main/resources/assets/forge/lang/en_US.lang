@@ -2,6 +2,8 @@ commands.forge.usage=Use /forge <subcommand>
 commands.forge.usage.tracking=Use /forge track <type> <duration>. Valid types are "te" (Tile Entities). Duration in seconds must be <= 60.
 commands.forge.usage.help=Use help [command] to view usages for that command.
 commands.forge.tps.summary=%s : Mean tick time: %d ms. Mean TPS: %d
+commands.forge.threads.summary.list=Thread count: %s
+commands.forge.threads.summary.threads=%s
 commands.forge.tps.usage=Use /forge tps [dimension]
 commands.forge.gen.usage=Use /forge gen <x> <y> <z> <chunkCount> [dimension] [interval]
 commands.forge.gen.dim_fail=Failed to load world for dimension %d, Task terminated.
