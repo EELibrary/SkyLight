@@ -548,7 +548,7 @@
              if (i != this.pendingTickListEntriesHashSet.size())
              {
 -                throw new IllegalStateException("TickNextTick list out of synch");
-S+                 LOGGER.warn("TickNextTick list out of synch");
++                 LOGGER.warn("TickNextTick list out of synch");
 +                 //If i > pendingTickListEntriesHashSet.size() this action won't be executed
 +                 return true;
 +                 //Do not throw this exception
