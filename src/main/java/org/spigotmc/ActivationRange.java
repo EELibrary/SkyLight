@@ -157,38 +157,40 @@ public class ActivationRange
      */
     private static void activateChunkEntities(Chunk chunk)
     {
-        for ( ClassInheritanceMultiMap<Entity> slice : chunk.entityLists )
-        {
-            for ( Entity entity : slice )
+        synchronized (chunk){
+            for ( ClassInheritanceMultiMap<Entity> slice : chunk.entityLists )
             {
-                if (entity == null) continue; // CatServer - fix NPE
-                if ( MinecraftServer.currentTick > entity.activatedTick )
+                for ( Entity entity : slice )
                 {
-                    if ( entity.defaultActivationState )
+                    if (entity == null) continue; // CatServer - fix NPE
+                    if ( MinecraftServer.currentTick > entity.activatedTick )
                     {
-                        entity.activatedTick = MinecraftServer.currentTick;
-                        continue;
-                    }
-                    switch ( entity.activationType )
-                    {
-                        case 1:
-                            if ( monsterBB.intersects( entity.getEntityBoundingBox() ) )
-                            {
-                                entity.activatedTick = MinecraftServer.currentTick;
-                            }
-                            break;
-                        case 2:
-                            if ( animalBB.intersects( entity.getEntityBoundingBox() ) )
-                            {
-                                entity.activatedTick = MinecraftServer.currentTick;
-                            }
-                            break;
-                        case 3:
-                        default:
-                            if ( miscBB.intersects( entity.getEntityBoundingBox() ) )
-                            {
-                                entity.activatedTick = MinecraftServer.currentTick;
-                            }
+                        if ( entity.defaultActivationState )
+                        {
+                            entity.activatedTick = MinecraftServer.currentTick;
+                            continue;
+                        }
+                        switch ( entity.activationType )
+                        {
+                            case 1:
+                                if ( monsterBB.intersects( entity.getEntityBoundingBox() ) )
+                                {
+                                    entity.activatedTick = MinecraftServer.currentTick;
+                                }
+                                break;
+                            case 2:
+                                if ( animalBB.intersects( entity.getEntityBoundingBox() ) )
+                                {
+                                    entity.activatedTick = MinecraftServer.currentTick;
+                                }
+                                break;
+                            case 3:
+                            default:
+                                if ( miscBB.intersects( entity.getEntityBoundingBox() ) )
+                                {
+                                    entity.activatedTick = MinecraftServer.currentTick;
+                                }
+                        }
                     }
                 }
             }

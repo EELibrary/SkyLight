@@ -91,7 +91,7 @@
      public int hurtResistantTime;
      protected boolean firstUpdate;
      protected boolean isImmuneToFire;
-@@ -172,12 +208,37 @@
+@@ -172,16 +208,41 @@
      protected UUID entityUniqueID;
      protected String cachedUniqueIdString;
      private final CommandResultStats cmdResultStats;
@@ -130,6 +130,11 @@
      public Entity(World worldIn)
      {
          this.entityId = nextEntityID++;
+-        this.riddenByEntities = Lists.<Entity>newArrayList();
++        this.riddenByEntities = Collections.synchronizedList(Lists.<Entity>newArrayList());
+         this.boundingBox = ZERO_AABB;
+         this.width = 0.6F;
+         this.height = 1.8F;
 @@ -200,8 +261,13 @@
  
          if (worldIn != null)
@@ -1225,6 +1230,15 @@
      public void addTrackingPlayer(EntityPlayerMP player)
      {
      }
+@@ -2981,7 +3661,7 @@
+     {
+         Set<Entity> set = Sets.<Entity>newHashSet();
+         this.getRecursivePassengersByType(Entity.class, set);
+-        return set;
++        return Collections.synchronizedSet(set);
+     }
+ 
+     public <T extends Entity> Collection<T> getRecursivePassengersByType(Class<T> entityClass)
 @@ -3069,7 +3749,7 @@
          return SoundCategory.NEUTRAL;
      }

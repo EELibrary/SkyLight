@@ -66,7 +66,7 @@
              EntityTrackerEntry entitytrackerentry = new EntityTrackerEntry(entityIn, trackingRange, this.maxTrackingDistanceThreshold, updateFrequency, sendVelocityUpdates);
              this.entries.add(entitytrackerentry);
 -            this.trackedEntityHashTable.addKey(entityIn.getEntityId(), entitytrackerentry);
-+            synchronized (this.trackedEntityHashTable) {
++            synchronized (this) {
 +                this.trackedEntityHashTable.addKey(entityIn.getEntityId(), entitytrackerentry);
 +            }
              entitytrackerentry.updatePlayerEntities(this.world.playerEntities);
@@ -111,7 +111,7 @@
  
 -        EntityTrackerEntry entitytrackerentry1 = this.trackedEntityHashTable.removeObject(entityIn.getEntityId());
 +        EntityTrackerEntry entitytrackerentry1 = null;
-+        synchronized (this.trackedEntityHashTable){
++        synchronized (this){
 +            entitytrackerentry1 = this.trackedEntityHashTable.removeObject(entityIn.getEntityId());
 +        }
  

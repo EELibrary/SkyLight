@@ -3,19 +3,50 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="Some updates">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/server/command/CommandThreads.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/Entity.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/Entity.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTrackerEntry.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTrackerEntry.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/ai/EntityAITasks.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/ai/EntityAITasks.java.patch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/minecraftforge/server/command/ForgeCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/server/command/ForgeCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/forge/lang/en_US.lang" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/forge/lang/en_US.lang" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/chunk/Chunk.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/chunk/Chunk.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/chunk/storage/AnvilChunkLoader.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/chunk/storage/AnvilChunkLoader.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/Catserver/Catserver.iml" beforeDir="false" afterPath="$PROJECT_DIR$/projects/Catserver/Catserver.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/Clean/Clean.iml" beforeDir="false" afterPath="$PROJECT_DIR$/projects/Clean/Clean.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/spigotmc/ActivationRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/spigotmc/ActivationRange.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -44,12 +75,6 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="CatServer" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="documentation" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="CatServer" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="forgegradle" type="c8890929:TasksNode$1" />
               </path>
             </expand>
@@ -72,6 +97,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
   <component name="ProjectId" id="26GiBuSeJIjUpwoPLeNonBwB3tt" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -83,6 +111,9 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="项目" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="RunManager" selected="Gradle.skylight [build]">
     <configuration name="SkyLight [genPatches build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -196,9 +227,9 @@
       <list>
         <item itemvalue="Gradle.skylight [build]" />
         <item itemvalue="Gradle.skylight [genPatches]" />
+        <item itemvalue="Gradle.skylight [setup]" />
         <item itemvalue="Gradle.skylight [build genPatches]" />
         <item itemvalue="Gradle.SkyLight [genPatches build]" />
-        <item itemvalue="Gradle.skylight [setup]" />
       </list>
     </recent_temporary>
   </component>

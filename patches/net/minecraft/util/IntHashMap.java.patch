@@ -1,0 +1,251 @@
+--- ../src-base/minecraft/net/minecraft/util/IntHashMap.java
++++ ../src-work/minecraft/net/minecraft/util/IntHashMap.java
+@@ -8,7 +8,7 @@
+     private transient int count;
+     private int threshold = 12;
+     private final float growFactor = 0.75F;
+-
++    private final IntHashMap mutex = this;
+     private static int computeHash(int integer)
+     {
+         integer = integer ^ integer >>> 20 ^ integer >>> 12;
+@@ -23,13 +23,15 @@
+     @Nullable
+     public V lookup(int hashEntry)
+     {
+-        int i = computeHash(hashEntry);
++        synchronized (mutex){
++            int i = computeHash(hashEntry);
+ 
+-        for (IntHashMap.Entry<V> entry = this.slots[getSlotIndex(i, this.slots.length)]; entry != null; entry = entry.nextEntry)
+-        {
+-            if (entry.hashEntry == hashEntry)
++            for (IntHashMap.Entry<V> entry = this.slots[getSlotIndex(i, this.slots.length)]; entry != null; entry = entry.nextEntry)
+             {
+-                return entry.valueEntry;
++                if (entry.hashEntry == hashEntry)
++                {
++                    return entry.valueEntry;
++                }
+             }
+         }
+ 
+@@ -44,13 +46,15 @@
+     @Nullable
+     final IntHashMap.Entry<V> lookupEntry(int hashEntry)
+     {
+-        int i = computeHash(hashEntry);
++        synchronized (mutex){
++            int i = computeHash(hashEntry);
+ 
+-        for (IntHashMap.Entry<V> entry = this.slots[getSlotIndex(i, this.slots.length)]; entry != null; entry = entry.nextEntry)
+-        {
+-            if (entry.hashEntry == hashEntry)
++            for (IntHashMap.Entry<V> entry = this.slots[getSlotIndex(i, this.slots.length)]; entry != null; entry = entry.nextEntry)
+             {
+-                return entry;
++                if (entry.hashEntry == hashEntry)
++                {
++                    return entry;
++                }
+             }
+         }
+ 
+@@ -61,13 +65,14 @@
+     {
+         int i = computeHash(hashEntry);
+         int j = getSlotIndex(i, this.slots.length);
+-
+-        for (IntHashMap.Entry<V> entry = this.slots[j]; entry != null; entry = entry.nextEntry)
+-        {
+-            if (entry.hashEntry == hashEntry)
++        synchronized (mutex){
++            for (IntHashMap.Entry<V> entry = this.slots[j]; entry != null; entry = entry.nextEntry)
+             {
+-                entry.valueEntry = valueEntry;
+-                return;
++                if (entry.hashEntry == hashEntry)
++                {
++                    entry.valueEntry = valueEntry;
++                    return;
++                }
+             }
+         }
+ 
+@@ -76,46 +81,50 @@
+ 
+     private void grow(int p_76047_1_)
+     {
+-        IntHashMap.Entry<V>[] entry = this.slots;
+-        int i = entry.length;
++        synchronized (mutex){
++            IntHashMap.Entry<V>[] entry = this.slots;
++            int i = entry.length;
+ 
+-        if (i == 1073741824)
+-        {
+-            this.threshold = Integer.MAX_VALUE;
++            if (i == 1073741824)
++            {
++                this.threshold = Integer.MAX_VALUE;
++            }
++            else
++            {
++                IntHashMap.Entry<V>[] entry1 = new IntHashMap.Entry[p_76047_1_];
++                this.copyTo(entry1);
++                this.slots = entry1;
++                this.threshold = (int)((float)p_76047_1_ * this.growFactor);
++            }
+         }
+-        else
+-        {
+-            IntHashMap.Entry<V>[] entry1 = new IntHashMap.Entry[p_76047_1_];
+-            this.copyTo(entry1);
+-            this.slots = entry1;
+-            this.threshold = (int)((float)p_76047_1_ * this.growFactor);
+-        }
+     }
+ 
+     private void copyTo(IntHashMap.Entry<V>[] p_76048_1_)
+     {
+-        IntHashMap.Entry<V>[] entry = this.slots;
+-        int i = p_76048_1_.length;
++        synchronized (mutex){
++            IntHashMap.Entry<V>[] entry = this.slots;
++            int i = p_76048_1_.length;
+ 
+-        for (int j = 0; j < entry.length; ++j)
+-        {
+-            IntHashMap.Entry<V> entry1 = entry[j];
+-
+-            if (entry1 != null)
++            for (int j = 0; j < entry.length; ++j)
+             {
+-                entry[j] = null;
++                IntHashMap.Entry<V> entry1 = entry[j];
+ 
+-                while (true)
++                if (entry1 != null)
+                 {
+-                    IntHashMap.Entry<V> entry2 = entry1.nextEntry;
+-                    int k = getSlotIndex(entry1.slotHash, i);
+-                    entry1.nextEntry = p_76048_1_[k];
+-                    p_76048_1_[k] = entry1;
+-                    entry1 = entry2;
++                    entry[j] = null;
+ 
+-                    if (entry2 == null)
++                    while (true)
+                     {
+-                        break;
++                        IntHashMap.Entry<V> entry2 = entry1.nextEntry;
++                        int k = getSlotIndex(entry1.slotHash, i);
++                        entry1.nextEntry = p_76048_1_[k];
++                        p_76048_1_[k] = entry1;
++                        entry1 = entry2;
++
++                        if (entry2 == null)
++                        {
++                            break;
++                        }
+                     }
+                 }
+             }
+@@ -125,7 +134,10 @@
+     @Nullable
+     public V removeObject(int o)
+     {
+-        IntHashMap.Entry<V> entry = this.removeEntry(o);
++        IntHashMap.Entry<V> entry=null;
++        synchronized (mutex){
++            entry = this.removeEntry(o);
++        }
+         return (V)(entry == null ? null : entry.valueEntry);
+     }
+ 
+@@ -137,28 +149,29 @@
+         IntHashMap.Entry<V> entry = this.slots[j];
+         IntHashMap.Entry<V> entry1;
+         IntHashMap.Entry<V> entry2;
+-
+-        for (entry1 = entry; entry1 != null; entry1 = entry2)
+-        {
+-            entry2 = entry1.nextEntry;
+-
+-            if (entry1.hashEntry == p_76036_1_)
++        synchronized (mutex){
++            for (entry1 = entry; entry1 != null; entry1 = entry2)
+             {
+-                --this.count;
++                entry2 = entry1.nextEntry;
+ 
+-                if (entry == entry1)
++                if (entry1.hashEntry == p_76036_1_)
+                 {
+-                    this.slots[j] = entry2;
++                    --this.count;
++
++                    if (entry == entry1)
++                    {
++                        this.slots[j] = entry2;
++                    }
++                    else
++                    {
++                        entry.nextEntry = entry2;
++                    }
++
++                    return entry1;
+                 }
+-                else
+-                {
+-                    entry.nextEntry = entry2;
+-                }
+ 
+-                return entry1;
++                entry = entry1;
+             }
+-
+-            entry = entry1;
+         }
+ 
+         return entry1;
+@@ -166,24 +179,28 @@
+ 
+     public void clearMap()
+     {
+-        IntHashMap.Entry<V>[] entry = this.slots;
++        synchronized (mutex){
++            IntHashMap.Entry<V>[] entry = this.slots;
+ 
+-        for (int i = 0; i < entry.length; ++i)
+-        {
+-            entry[i] = null;
+-        }
++            for (int i = 0; i < entry.length; ++i)
++            {
++                entry[i] = null;
++            }
+ 
+-        this.count = 0;
++            this.count = 0;
++        }
+     }
+ 
+     private void insert(int p_76040_1_, int p_76040_2_, V p_76040_3_, int p_76040_4_)
+     {
+-        IntHashMap.Entry<V> entry = this.slots[p_76040_4_];
+-        this.slots[p_76040_4_] = new IntHashMap.Entry(p_76040_1_, p_76040_2_, p_76040_3_, entry);
++        synchronized (mutex){
++            IntHashMap.Entry<V> entry = this.slots[p_76040_4_];
++            this.slots[p_76040_4_] = new IntHashMap.Entry(p_76040_1_, p_76040_2_, p_76040_3_, entry);
+ 
+-        if (this.count++ >= this.threshold)
+-        {
+-            this.grow(2 * this.slots.length);
++            if (this.count++ >= this.threshold)
++            {
++                this.grow(2 * this.slots.length);
++            }
+         }
+     }
+ 
