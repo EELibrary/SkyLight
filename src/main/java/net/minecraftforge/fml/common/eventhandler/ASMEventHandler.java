@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import catserver.server.AsyncCatcher;
 import net.minecraftforge.fml.common.ModContainer;
 
 import org.apache.logging.log4j.ThreadContext;
@@ -36,7 +37,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import com.google.common.collect.Maps;
-
+import net.minecraft.server.MinecraftServer;
 public class ASMEventHandler implements IEventListener
 {
     private static int IDs = 0;
@@ -76,27 +77,44 @@ public class ASMEventHandler implements IEventListener
             }
         }
     }
-    Lock lock1 = new ReentrantLock();
     @SuppressWarnings("rawtypes")
     @Override
     public void invoke(Event event)
     {
-
-        lock1.lock();
-        if (GETCONTEXT)
-            ThreadContext.put("mod", owner == null ? "" : owner.getName());
-        if (handler != null)
-        {
-            if (!event.isCancelable() || !event.isCanceled() || subInfo.receiveCanceled())
+        try{
+            if (GETCONTEXT)
+                ThreadContext.put("mod", owner == null ? "" : owner.getName());
+            if (handler != null)
             {
-                if (filter == null || filter == ((IGenericEvent)event).getGenericType())
+                if (!event.isCancelable() || !event.isCanceled() || subInfo.receiveCanceled())
                 {
-                    handler.invoke(event);
+                    if (filter == null || filter == ((IGenericEvent)event).getGenericType())
+                    {
+                        handler.invoke(event);
+                    }
                 }
             }
+            if (GETCONTEXT) ThreadContext.remove("mod");
+        }catch(Exception e){
+            System.out.println("An task execute failed.Try to execute on main thread");
+            MinecraftServer.executeFailedQueue.add(()->{
+                if (GETCONTEXT)
+                    ThreadContext.put("mod", owner == null ? "" : owner.getName());
+                if (handler != null)
+                {
+                    if (!event.isCancelable() || !event.isCanceled() || subInfo.receiveCanceled())
+                    {
+                        if (filter == null || filter == ((IGenericEvent)event).getGenericType())
+                        {
+                            handler.invoke(event);
+                        }
+                    }
+                }
+                if (GETCONTEXT) ThreadContext.remove("mod");
+            });
+
         }
-        if (GETCONTEXT) ThreadContext.remove("mod");
-        lock1.unlock();
+
     }
 
     public EventPriority getPriority()
