@@ -96,7 +96,7 @@ public class ASMEventHandler implements IEventListener
             }
             if (GETCONTEXT) ThreadContext.remove("mod");
         }catch(Exception e){
-            System.out.println("An task execute failed.Try to execute on main thread");
+            System.out.println("An task execute failed.Try fall back to main thread execute");
             MinecraftServer.executeFailedQueue.add(()->{
                 if (GETCONTEXT)
                     ThreadContext.put("mod", owner == null ? "" : owner.getName());
