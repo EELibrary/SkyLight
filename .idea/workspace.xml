@@ -22,10 +22,13 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="emmmm">
+    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="remove some bug fix">
       <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/Entity.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/Entity.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/boss/EntityDragon.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/boss/EntityDragon.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/ServerWorldEventHandler.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/ServerWorldEventHandler.java.patch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" afterDir="false" />
     </list>
@@ -65,6 +68,17 @@
                 <item name="CatServer" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="forgegradle" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CatServer" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="help" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CatServer" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
               </path>
             </expand>
             <select />
@@ -118,7 +132,7 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
-  <component name="RunManager" selected="Gradle.skylight [genPatches]">
+  <component name="RunManager" selected="Gradle.skylight [build]">
     <configuration name="SkyLight [genPatches build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -228,8 +242,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.skylight [genPatches]" />
         <item itemvalue="Gradle.skylight [build]" />
+        <item itemvalue="Gradle.skylight [genPatches]" />
         <item itemvalue="Gradle.skylight [setup]" />
         <item itemvalue="Gradle.skylight [build genPatches]" />
         <item itemvalue="Gradle.SkyLight [genPatches build]" />
@@ -301,7 +315,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647683090494</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="remove some bug fix">
+      <created>1647692094554</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1647692094554</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -309,7 +330,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -320,6 +353,7 @@
     <MESSAGE value="Some updates" />
     <MESSAGE value="thread safe update" />
     <MESSAGE value="emmmm" />
-    <option name="LAST_COMMIT_MESSAGE" value="emmmm" />
+    <MESSAGE value="remove some bug fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove some bug fix" />
   </component>
 </project>

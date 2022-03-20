@@ -50,29 +50,32 @@
          }
          else if (entityIn instanceof EntityEnderCrystal)
          {
-@@ -215,48 +221,24 @@
+@@ -213,51 +219,19 @@
+         this.track(entityIn, trackingRange, updateFrequency, false);
+     }
  
-     public void track(Entity entityIn, int trackingRange, final int updateFrequency, boolean sendVelocityUpdates)
-     {
-+        org.spigotmc.AsyncCatcher.catchOp("entity track"); // Spigot
+-    public void track(Entity entityIn, int trackingRange, final int updateFrequency, boolean sendVelocityUpdates)
+-    {
+-        try
+-        {
+-            if (this.trackedEntityHashTable.containsItem(entityIn.getEntityId()))
+-            {
++    public void track(Entity entityIn, int trackingRange, final int updateFrequency, boolean sendVelocityUpdates) {
 +        trackingRange = org.spigotmc.TrackingRange.getEntityTrackingRange(entityIn, trackingRange); // Spigot
-         try
-         {
-             if (this.trackedEntityHashTable.containsItem(entityIn.getEntityId()))
-             {
++        try {
++            if (this.trackedEntityHashTable.containsItem(entityIn.getEntityId())) {
                  throw new IllegalStateException("Entity is already tracked!");
              }
 -
              EntityTrackerEntry entitytrackerentry = new EntityTrackerEntry(entityIn, trackingRange, this.maxTrackingDistanceThreshold, updateFrequency, sendVelocityUpdates);
              this.entries.add(entitytrackerentry);
--            this.trackedEntityHashTable.addKey(entityIn.getEntityId(), entitytrackerentry);
-+            synchronized (this) {
-+                this.trackedEntityHashTable.addKey(entityIn.getEntityId(), entitytrackerentry);
-+            }
+             this.trackedEntityHashTable.addKey(entityIn.getEntityId(), entitytrackerentry);
              entitytrackerentry.updatePlayerEntities(this.world.playerEntities);
++        } catch (Throwable throwable) {
++            throwable.printStackTrace();
          }
-         catch (Throwable throwable)
-         {
+-        catch (Throwable throwable)
+-        {
 -            CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Adding entity to track");
 -            CrashReportCategory crashreportcategory = crashreport.makeCategory("Entity To Track");
 -            crashreportcategory.addCrashSection("Tracking range", trackingRange + " blocks");
@@ -101,11 +104,11 @@
 -            {
 -                LOGGER.error("\"Silently\" catching entity tracking error.", (Throwable)reportedexception);
 -            }
-+            throwable.printStackTrace();
-         }
+-        }
      }
  
-@@ -272,7 +254,10 @@
+     public void untrack(Entity entityIn)
+@@ -272,7 +246,10 @@
              }
          }
  
@@ -117,7 +120,7 @@
  
          if (entitytrackerentry1 != null)
          {
-@@ -283,7 +268,7 @@
+@@ -283,7 +260,7 @@
  
      public void tick()
      {
@@ -126,7 +129,7 @@
  
          for (EntityTrackerEntry entitytrackerentry : this.entries)
          {
-@@ -300,14 +285,9 @@
+@@ -300,14 +277,9 @@
              }
          }
  
@@ -144,7 +147,7 @@
                      entitytrackerentry1.updatePlayerEntity(entityplayermp);
                  }
              }
-@@ -339,6 +319,25 @@
+@@ -339,6 +311,25 @@
          }
      }
  
@@ -170,7 +173,7 @@
      public void sendToTrackingAndSelf(Entity entityIn, Packet<?> packetIn)
      {
          EntityTrackerEntry entitytrackerentry = this.trackedEntityHashTable.lookup(entityIn.getEntityId());
-@@ -359,8 +358,8 @@
+@@ -359,8 +350,8 @@
  
      public void sendLeashedEntitiesInChunk(EntityPlayerMP player, Chunk chunkIn)
      {
