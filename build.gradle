@@ -6,6 +6,7 @@ buildscript {
             name = "forge"
             url = "https://files.minecraftforge.net/maven"
         }
+
         maven {
             name = 'minecraft'
             url = 'https://libraries.minecraft.net/'
@@ -184,6 +185,7 @@ extractCatserverSources { exclude "**/SideOnly.java", "**/Side.java" }
 extractCatserverResources { exclude "**/log4j2.xml" }
 
 genGradleProjects {
+    addRepo('jitpack','https://jitpack.io')
     addRepo('forge', 'http://files.minecraftforge.net/maven/')
     addRepo('apache', 'https://repo.maven.apache.org/maven2/')
     addRepo('spigotmc-public', 'https://hub.spigotmc.org/nexus/content/groups/public/')
