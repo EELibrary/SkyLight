@@ -23,7 +23,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="Don't stick in the errors">
-      <change beforePath="$PROJECT_DIR$/src/main/java/wearblackallday/javautils/util/ThreadPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/wearblackallday/javautils/util/ThreadPool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -351,7 +351,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648813862908</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Don't stick in the errors">
+      <created>1648814117182</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1648814117182</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

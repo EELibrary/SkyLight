@@ -8,7 +8,18 @@
  
      public void init(IBlockAccess sourceIn, EntityLiving mob)
      {
-@@ -295,7 +296,9 @@
+@@ -32,7 +33,9 @@
+ 
+     public void postProcess()
+     {
+-        this.entity.setPathPriority(PathNodeType.WATER, this.avoidsWater);
++        if (entity!=null){
++            this.entity.setPathPriority(PathNodeType.WATER, this.avoidsWater);
++        }
+         super.postProcess();
+     }
+ 
+@@ -295,7 +298,9 @@
          PathNodeType pathnodetype = PathNodeType.BLOCKED;
          double d0 = (double)entitylivingIn.width / 2.0D;
          BlockPos blockpos = new BlockPos(entitylivingIn);
@@ -18,7 +29,7 @@
  
          if (enumset.contains(PathNodeType.FENCE))
          {
-@@ -399,6 +402,8 @@
+@@ -399,6 +404,8 @@
              {
                  pathnodetype = PathNodeType.DAMAGE_CACTUS;
              }
@@ -27,7 +38,7 @@
          }
  
          pathnodetype = this.checkNeighborBlocks(blockaccessIn, x, y, z, pathnodetype);
-@@ -417,16 +422,19 @@
+@@ -417,16 +424,19 @@
                  {
                      if (i != 0 || j != 0)
                      {
@@ -50,7 +61,7 @@
                      }
                  }
              }
-@@ -443,6 +451,9 @@
+@@ -443,6 +453,9 @@
          Block block = iblockstate.getBlock();
          Material material = iblockstate.getMaterial();
  
