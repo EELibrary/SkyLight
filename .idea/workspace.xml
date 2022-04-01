@@ -22,12 +22,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="auto thread count set!!">
+    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="Auto thread count set and better concurrent !!!!!!!">
+      <change afterPath="$PROJECT_DIR$/src/main/java/wearblackallday/javautils/util/ThreadPool.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/gradle.log" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/gradle.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityLivingBase.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityLivingBase.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTrackerEntry.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTrackerEntry.java.patch" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,8 +90,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/EventPriority.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/catserver/server/AsyncCatcher.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/EventBus.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/catserver/server/launch/Java11Support.java" root0="FORCE_HIGHLIGHTING" />
@@ -122,12 +122,15 @@
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\新建文件夹\OneDrive\桌面\SkyLight\src\main" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="util" />
       <recent name="wearblackallday.javautils.util" />
+      <recent name="util" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.skylight [build]">
+  <component name="RunManager" selected="Gradle.skylight [genPatches]">
     <configuration name="SkyLight [genPatches build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -237,8 +240,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.skylight [build]" />
         <item itemvalue="Gradle.skylight [genPatches]" />
+        <item itemvalue="Gradle.skylight [build]" />
         <item itemvalue="Gradle.skylight [setup]" />
         <item itemvalue="Gradle.skylight [build genPatches]" />
         <item itemvalue="Gradle.SkyLight [genPatches build]" />
@@ -338,7 +341,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648807516980</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Auto thread count set and better concurrent !!!!!!!">
+      <created>1648807974791</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1648807974791</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -374,6 +384,7 @@
     <MESSAGE value="555" />
     <MESSAGE value="awa" />
     <MESSAGE value="auto thread count set!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="auto thread count set!!" />
+    <MESSAGE value="Auto thread count set and better concurrent !!!!!!!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Auto thread count set and better concurrent !!!!!!!" />
   </component>
 </project>

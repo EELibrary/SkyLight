@@ -266,22 +266,20 @@
              }
          }
      }
-@@ -480,22 +561,28 @@
+@@ -480,22 +561,26 @@
      {
          return playerMP.getServerWorld().getPlayerChunkMap().isPlayerWatchingChunk(playerMP, this.trackedEntity.chunkCoordX, this.trackedEntity.chunkCoordZ);
      }
 -
-+    private final ThreadPool executor = new ThreadPool();
++    public static final ThreadPool TRACKER_ENTRY_EXECUTOR = new ThreadPool();
      public void updatePlayerEntities(List<EntityPlayer> players)
      {
 -        for (int i = 0; i < players.size(); ++i)
 -        {
 -            this.updatePlayerEntity((EntityPlayerMP)players.get(i));
 -        }
-+        executor.execute(players,player->{
-+            this.updatePlayerEntity((EntityPlayerMP) player);
-+        });
-+        executor.awaitCompletion();
++        TRACKER_ENTRY_EXECUTOR.execute(players,player-> this.updatePlayerEntity((EntityPlayerMP) player));
++        TRACKER_ENTRY_EXECUTOR.awaitCompletion();
      }
  
 +    @Nullable
