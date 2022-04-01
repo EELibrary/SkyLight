@@ -50,7 +50,7 @@
  import net.minecraft.server.management.PlayerList;
  import net.minecraft.server.management.PlayerProfileCache;
  import net.minecraft.util.IProgressUpdate;
-@@ -78,34 +83,47 @@
+@@ -78,34 +83,49 @@
  import net.minecraft.world.WorldServerMulti;
  import net.minecraft.world.WorldSettings;
  import net.minecraft.world.WorldType;
@@ -78,6 +78,8 @@
 +import org.wangxyper.JavaUtils.ConcurrentExecutor;
 +import wearblackallday.javautils.util.ThreadPool;
 +
++import static net.minecraft.world.World.SERVER_EXECUTOR;
++
  public abstract class MinecraftServer implements ICommandSender, Runnable, IThreadListener, ISnooperInfo
  {
 -    private static final Logger LOGGER = LogManager.getLogger();
@@ -104,7 +106,7 @@
      private PlayerList playerList;
      private boolean serverRunning = true;
      private boolean serverStopped;
-@@ -123,11 +141,11 @@
+@@ -123,11 +143,11 @@
      private int buildLimit;
      private int maxPlayerIdleMinutes;
      public final long[] tickTimeArray = new long[100];
@@ -118,7 +120,7 @@
      private String worldName;
      private boolean isDemo;
      private boolean enableBonusChest;
-@@ -143,26 +161,45 @@
+@@ -143,26 +163,45 @@
      private final GameProfileRepository profileRepo;
      private final PlayerProfileCache profileCache;
      private long nanoTimeSinceStatusRefresh;
@@ -169,7 +171,7 @@
      public ServerCommandManager createCommandManager()
      {
          return new ServerCommandManager(this);
-@@ -220,116 +257,137 @@
+@@ -220,116 +259,136 @@
  
      public void loadAllWorlds(String saveName, String worldNameIn, long seed, WorldType type, String generatorOptions)
      {
@@ -353,8 +355,7 @@
 -                {
 -                    this.outputPercentRemaining("Preparing spawn area", i1 * 100 / 625);
 -                    k1 = j2;
-+        ThreadPool pool = new ThreadPool();
-+        pool.execute(()->{
++        SERVER_EXECUTOR.execute(()->{
 +            int i1 = 0;
 +            long k1 = getCurrentTimeMillis();
 +            for (int l1 = -192; l1 <= 192 && this.isServerRunning(); l1 += 16) {
@@ -372,7 +373,7 @@
 -                worldserver.getChunkProvider().provideChunk(blockpos.getX() + l1 >> 4, blockpos.getZ() + i2 >> 4);
              }
 +        });
-+        pool.awaitCompletion();
++        SERVER_EXECUTOR.awaitCompletion();
 +        for (WorldServer world : this.worldServerList) {
 +            this.server.getPluginManager().callEvent(new org.bukkit.event.world.WorldLoadEvent(world.getWorld()));
          }
@@ -380,7 +381,7 @@
          this.clearCurrentTask();
      }
  
-@@ -379,7 +437,7 @@
+@@ -379,7 +438,7 @@
  
      public void saveAllWorlds(boolean isSilent)
      {
@@ -389,14 +390,13 @@
          {
              if (worldserver != null)
              {
-@@ -400,10 +458,22 @@
+@@ -400,10 +459,21 @@
          }
      }
  
 -    public void stopServer()
 +    private boolean hasStopped = false;
 +    private final Object stopLock = new Object();
-+    public static ThreadPoolExecutor serverExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 +    public void stopServer() throws MinecraftException
      {
 +        org.spigotmc.AsyncCatcher.enabled = false; // Spigot
@@ -816,19 +816,19 @@
 +                worldserver.addWorldInfoToCrashReport(crashreport);
 +                throw new ReportedException(crashreport);
              }
-+            entities_tracker_executor.execute(() -> {
-+              worldserver.timings.tickEntities.startTiming(); // Spigot
-+              worldserver.updateEntities();
-+              worldserver.timings.tickEntities.stopTiming(); // Spigot
-+            });
++            try {
++                worldserver.timings.tickEntities.startTiming(); // Spigot
++                worldserver.updateEntities();
++                worldserver.timings.tickEntities.stopTiming(); // Spigot
++            }catch (Exception e){
++                e.printStackTrace();
++            }
 +            net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostWorldTick(worldserver);
 +            this.profiler.endSection();
 +            this.profiler.startSection("tracker");
-+            entities_tracker_executor.postConcurrentTask(() -> {
-+                worldserver.timings.tracker.startTiming(); // Spigot
-+                worldserver.getEntityTracker().tick();
-+                worldserver.timings.tracker.stopTiming(); // Spigot
-+            });
++            worldserver.timings.tracker.startTiming(); // Spigot
++            worldserver.getEntityTracker().tick();
++            worldserver.timings.tracker.stopTiming(); // Spigot
 +            entities_tracker_executor.waitConcurrentTasks(50);
 +            this.profiler.endSection();
 +            this.profiler.endSection();

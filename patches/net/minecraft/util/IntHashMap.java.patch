@@ -1,6 +1,14 @@
 --- ../src-base/minecraft/net/minecraft/util/IntHashMap.java
 +++ ../src-work/minecraft/net/minecraft/util/IntHashMap.java
-@@ -8,7 +8,7 @@
+@@ -1,6 +1,7 @@
+ package net.minecraft.util;
+ 
+ import javax.annotation.Nullable;
++import java.util.Arrays;
+ 
+ public class IntHashMap<V>
+ {
+@@ -8,7 +9,7 @@
      private transient int count;
      private int threshold = 12;
      private final float growFactor = 0.75F;
@@ -9,7 +17,7 @@
      private static int computeHash(int integer)
      {
          integer = integer ^ integer >>> 20 ^ integer >>> 12;
-@@ -23,13 +23,15 @@
+@@ -23,13 +24,15 @@
      @Nullable
      public V lookup(int hashEntry)
      {
@@ -30,7 +38,7 @@
              }
          }
  
-@@ -44,13 +46,15 @@
+@@ -44,13 +47,15 @@
      @Nullable
      final IntHashMap.Entry<V> lookupEntry(int hashEntry)
      {
@@ -51,7 +59,7 @@
              }
          }
  
-@@ -61,13 +65,14 @@
+@@ -61,13 +66,14 @@
      {
          int i = computeHash(hashEntry);
          int j = getSlotIndex(i, this.slots.length);
@@ -72,7 +80,7 @@
              }
          }
  
-@@ -76,46 +81,50 @@
+@@ -76,46 +82,50 @@
  
      private void grow(int p_76047_1_)
      {
@@ -151,7 +159,7 @@
                      }
                  }
              }
-@@ -125,7 +134,10 @@
+@@ -125,7 +135,10 @@
      @Nullable
      public V removeObject(int o)
      {
@@ -163,7 +171,7 @@
          return (V)(entry == null ? null : entry.valueEntry);
      }
  
-@@ -137,28 +149,29 @@
+@@ -137,28 +150,29 @@
          IntHashMap.Entry<V> entry = this.slots[j];
          IntHashMap.Entry<V> entry1;
          IntHashMap.Entry<V> entry2;
@@ -209,26 +217,22 @@
          }
  
          return entry1;
-@@ -166,24 +179,28 @@
+@@ -166,24 +180,23 @@
  
      public void clearMap()
      {
 -        IntHashMap.Entry<V>[] entry = this.slots;
-+        synchronized (mutex){
-+            IntHashMap.Entry<V>[] entry = this.slots;
- 
+-
 -        for (int i = 0; i < entry.length; ++i)
 -        {
 -            entry[i] = null;
--        }
-+            for (int i = 0; i < entry.length; ++i)
-+            {
-+                entry[i] = null;
-+            }
- 
--        this.count = 0;
++        synchronized (mutex){
++            IntHashMap.Entry<V>[] entry = this.slots;
++            Arrays.fill(entry, null);
 +            this.count = 0;
-+        }
+         }
+-
+-        this.count = 0;
      }
  
      private void insert(int p_76040_1_, int p_76040_2_, V p_76040_3_, int p_76040_4_)

@@ -178,7 +178,7 @@
 +    /** Forge: Used to store custom data for each entity. */
 +    private NBTTagCompound customEntityData;
 +    public boolean captureDrops = false;
-+    public java.util.ArrayList<EntityItem> capturedDrops = new java.util.ArrayList<EntityItem>();
++    public java.util.List<EntityItem> capturedDrops = Collections.synchronizedList(new java.util.ArrayList<EntityItem>());
 +    public net.minecraftforge.common.capabilities.CapabilityDispatcher capabilities; // CatServer - private -> public
 +
      public int getEntityId()
@@ -1245,6 +1245,15 @@
      public void addTrackingPlayer(EntityPlayerMP player)
      {
      }
+@@ -2961,7 +3641,7 @@
+ 
+     public List<Entity> getPassengers()
+     {
+-        return (List<Entity>)(this.riddenByEntities.isEmpty() ? Collections.emptyList() : Lists.newArrayList(this.riddenByEntities));
++        return (List<Entity>)(this.riddenByEntities.isEmpty() ? Collections.emptyList() : Collections.synchronizedList(Lists.newArrayList(this.riddenByEntities)));
+     }
+ 
+     public boolean isPassenger(Entity entityIn)
 @@ -2981,7 +3661,7 @@
      {
          Set<Entity> set = Sets.<Entity>newHashSet();
