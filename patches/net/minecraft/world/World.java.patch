@@ -927,7 +927,7 @@
      public void scheduleBlockUpdate(BlockPos pos, Block blockIn, int delay, int priority)
      {
      }
-+    public static final ThreadPool SERVER_EXECUTOR = new ThreadPool(8*Runtime.getRuntime().availableProcessors());
++    public static final ThreadPool SERVER_EXECUTOR = new ThreadPool();
 +    public void updateEntities() {
  
 -    public void updateEntities()
