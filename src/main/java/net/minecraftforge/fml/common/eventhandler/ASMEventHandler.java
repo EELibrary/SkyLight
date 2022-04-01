@@ -73,22 +73,20 @@ public class ASMEventHandler implements IEventListener
             }
         }
     }
-    ThreadPoolExecutor eventExecutor = new ThreadPoolExecutor(4,Integer.MAX_VALUE,Long.MAX_VALUE, TimeUnit.DAYS,new LinkedBlockingDeque<>());
+   // ThreadPoolExecutor eventExecutor = new ThreadPoolExecutor(4,Integer.MAX_VALUE,Long.MAX_VALUE, TimeUnit.DAYS,new LinkedBlockingDeque<>());
     @SuppressWarnings("rawtypes")
     @Override
     public void invoke(Event event) {
-        synchronized (handler) {
-            if (GETCONTEXT)
-                ThreadContext.put("mod", owner == null ? "" : owner.getName());
-            if (handler != null) {
-                if (!event.isCancelable() || !event.isCanceled() || subInfo.receiveCanceled()) {
-                    if (filter == null || filter == ((IGenericEvent) event).getGenericType()) {
-                        handler.invoke(event);
-                    }
+        if (GETCONTEXT)
+            ThreadContext.put("mod", owner == null ? "" : owner.getName());
+        if (handler != null) {
+            if (!event.isCancelable() || !event.isCanceled() || subInfo.receiveCanceled()) {
+                if (filter == null || filter == ((IGenericEvent) event).getGenericType()) {
+                    handler.invoke(event);
                 }
             }
-            if (GETCONTEXT) ThreadContext.remove("mod");
         }
+        if (GETCONTEXT) ThreadContext.remove("mod");
     }
 
     public EventPriority getPriority()
