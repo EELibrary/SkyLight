@@ -22,12 +22,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="Auto thread count set and better concurrent !!!!!!!">
-      <change afterPath="$PROJECT_DIR$/src/main/java/wearblackallday/javautils/util/ThreadPool.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTrackerEntry.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTrackerEntry.java.patch" afterDir="false" />
+    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="Don't stick in the errors">
+      <change beforePath="$PROJECT_DIR$/src/main/java/wearblackallday/javautils/util/ThreadPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/wearblackallday/javautils/util/ThreadPool.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -348,7 +344,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648807974791</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Don't stick in the errors">
+      <created>1648813862908</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1648813862908</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -385,6 +388,7 @@
     <MESSAGE value="awa" />
     <MESSAGE value="auto thread count set!!" />
     <MESSAGE value="Auto thread count set and better concurrent !!!!!!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Auto thread count set and better concurrent !!!!!!!" />
+    <MESSAGE value="Don't stick in the errors" />
+    <option name="LAST_COMMIT_MESSAGE" value="Don't stick in the errors" />
   </component>
 </project>

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 package wearblackallday.javautils.util;
 
