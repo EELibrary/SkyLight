@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/world/gen/ChunkProviderServer.java
 +++ ../src-work/minecraft/net/minecraft/world/gen/ChunkProviderServer.java
-@@ -6,10 +6,7 @@
+@@ -6,10 +6,8 @@
  import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
  import it.unimi.dsi.fastutil.objects.ObjectIterator;
  import java.io.IOException;
@@ -9,10 +9,11 @@
 -import java.util.List;
 -import java.util.Set;
 +import java.util.*;
++import java.util.concurrent.ConcurrentHashMap;
  import javax.annotation.Nullable;
  import net.minecraft.crash.CrashReport;
  import net.minecraft.crash.CrashReportCategory;
-@@ -26,15 +23,18 @@
+@@ -26,15 +24,18 @@
  import net.minecraft.world.chunk.storage.IChunkLoader;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
@@ -23,16 +24,16 @@
  {
      private static final Logger LOGGER = LogManager.getLogger();
 -    private final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
-+    public final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
++    public final Set<Long> droppedChunksSet = ConcurrentHashMap.newKeySet();
      public final IChunkGenerator chunkGenerator;
      public final IChunkLoader chunkLoader;
      public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<Chunk>(8192);
      public final WorldServer world;
-+    private final Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
++    private final Set<Long> loadingChunks = ConcurrentHashMap.newKeySet();
  
      public ChunkProviderServer(WorldServer worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn)
      {
-@@ -82,23 +82,56 @@
+@@ -82,23 +83,56 @@
          return chunk;
      }
  
@@ -94,7 +95,7 @@
          return chunk;
      }
  
-@@ -108,6 +141,7 @@
+@@ -108,6 +142,7 @@
  
          if (chunk == null)
          {
@@ -102,7 +103,7 @@
              long i = ChunkPos.asLong(x, z);
  
              try
-@@ -124,9 +158,12 @@
+@@ -124,9 +159,12 @@
                  throw new ReportedException(crashreport);
              }
  
@@ -117,7 +118,7 @@
          }
  
          return chunk;
-@@ -218,36 +255,91 @@
+@@ -218,36 +256,91 @@
          this.chunkLoader.flush();
      }
  

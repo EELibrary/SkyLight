@@ -274,21 +274,15 @@
              }
          }
      }
-@@ -483,19 +563,30 @@
+@@ -483,19 +563,24 @@
  
      public void updatePlayerEntities(List<EntityPlayer> players)
      {
 -        for (int i = 0; i < players.size(); ++i)
 -        {
 -            this.updatePlayerEntity((EntityPlayerMP)players.get(i));
-+        wearblackallday.javautils.util.ThreadPool pool = new wearblackallday.javautils.util.ThreadPool();
-+        try {
-+            pool.execute(players, player -> {
-+                this.updatePlayerEntity((EntityPlayerMP) player);
-+            });
-+            pool.awaitCompletion();
-+        }catch (Exception e){
-+            e.printStackTrace();
++        for (EntityPlayer player: players) {
++            this.updatePlayerEntity((EntityPlayerMP) player);
          }
      }
  
