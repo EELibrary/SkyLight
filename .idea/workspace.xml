@@ -22,23 +22,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="No sync">
+    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="回滚代码">
       <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/gradle.log" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/gradle.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/Entity.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/Entity.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityLivingBase.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityLivingBase.java.patch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTrackerEntry.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTrackerEntry.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/player/EntityPlayer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/player/EntityPlayer.java.patch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/util/IntHashMap.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/util/IntHashMap.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/server/management/PlayerList.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/server/management/PlayerList.java.patch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/ServerWorldEventHandler.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/ServerWorldEventHandler.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/WorldServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/WorldServer.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/wangxyper/JavaUtils/ConcurrentExecutor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/wearblackallday/javautils/util/ThreadPool.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,6 +128,7 @@
       <recent name="E:\新建文件夹\OneDrive\桌面\SkyLight\src\main" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="JavaUtils" />
       <recent name="wearblackallday.javautils.util" />
       <recent name="util" />
     </key>
@@ -251,10 +243,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.skylight [build]" />
+        <item itemvalue="Gradle.skylight [genPatches]" />
         <item itemvalue="Gradle.SkyLight [genPatches build]" />
         <item itemvalue="Gradle.skylight [setup]" />
         <item itemvalue="Gradle.SkyLight [clean]" />
-        <item itemvalue="Gradle.skylight [genPatches]" />
       </list>
     </recent_temporary>
   </component>
@@ -400,7 +392,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648858856034</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="回滚代码">
+      <created>1648863384643</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1648863384643</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -439,6 +438,7 @@
     <MESSAGE value="Auto thread count set and better concurrent !!!!!!!" />
     <MESSAGE value="Don't stick in the errors" />
     <MESSAGE value="No sync" />
-    <option name="LAST_COMMIT_MESSAGE" value="No sync" />
+    <MESSAGE value="回滚代码" />
+    <option name="LAST_COMMIT_MESSAGE" value="回滚代码" />
   </component>
 </project>
