@@ -22,12 +22,23 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="remove tick position">
+    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="CME exception fix">
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/ConcurrentLongLinkedOpenHashSet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/ConcurrentLongSortedSet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/ConcurrentShortHashSet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/FastUtilHackUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/Int2ObjectConcurrentHashMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/Long2ByteConcurrentHashMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/Long2IntConcurrentHashMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/Long2IntConcurrentNonLinkedOpenMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/Long2LongConcurrentHashMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/Long2ObjectConcurrentHashMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/Long2ObjectOpenConcurrentHashMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/Catserver/src/main/java/fastutil/sync/SyncLongLinkedOpenHashSet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/EntityTracker.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/server/management/PlayerChunkMap.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/server/management/PlayerChunkMap.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/WorldServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/WorldServer.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/gen/ChunkProviderServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/gen/ChunkProviderServer.java.patch" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,13 +126,16 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/projects/Catserver/src/main/java" />
     <property name="project.structure.last.edited" value="项目" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\新建文件夹\OneDrive\桌面\SkyLight\projects\Catserver\src\main\java" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\新建文件夹\OneDrive\桌面\SkyLight\src\main" />
     </key>
@@ -411,7 +425,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648876096348</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="CME exception fix">
+      <created>1648892344662</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1648892344662</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -453,6 +474,7 @@
     <MESSAGE value="回滚代码" />
     <MESSAGE value="Test update" />
     <MESSAGE value="remove tick position" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove tick position" />
+    <MESSAGE value="CME exception fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="CME exception fix" />
   </component>
 </project>
