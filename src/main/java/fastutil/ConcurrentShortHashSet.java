@@ -27,35 +27,35 @@ public class ConcurrentShortHashSet implements ShortSet {
         return new FastUtilHackUtil.WrappingShortIterator(backing.iterator());
     }
 
-    @NotNull
+
     @Override
     public Object[] toArray() {
         return backing.toArray();
     }
 
-    @NotNull
+
     @Override
-    public <T> T[] toArray(@NotNull T[] ts) {
+    public <T> T[] toArray( T[] ts) {
         return (T[]) backing.toArray();
     }
 
     @Override
-    public boolean containsAll(@NotNull Collection<?> collection) {
+    public boolean containsAll( Collection<?> collection) {
         return backing.containsAll(collection);
     }
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends Short> collection) {
+    public boolean addAll( Collection<? extends Short> collection) {
         return backing.addAll(collection);
     }
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> collection) {
+    public boolean removeAll( Collection<?> collection) {
         return backing.removeAll(collection);
     }
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> collection) {
+    public boolean retainAll( Collection<?> collection) {
         return backing.retainAll(collection);
     }
 

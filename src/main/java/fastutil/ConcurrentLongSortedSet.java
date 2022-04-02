@@ -29,35 +29,35 @@ public class ConcurrentLongSortedSet implements LongSortedSet {
         return null;
     }
 
-    @NotNull
+
     @Override
     public Object[] toArray() {
         return back.toArray();
     }
 
-    @NotNull
+
     @Override
-    public <T> T[] toArray(@NotNull T[] ts) {
+    public <T> T[] toArray( T[] ts) {
         return null;
     }
 
     @Override
-    public boolean containsAll(@NotNull Collection<?> collection) {
+    public boolean containsAll( Collection<?> collection) {
         return back.containsAll(collection);
     }
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends Long> collection) {
+    public boolean addAll( Collection<? extends Long> collection) {
         return back.addAll(collection);
     }
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> collection) {
+    public boolean removeAll( Collection<?> collection) {
         return back.removeAll(collection);
     }
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> collection) {
+    public boolean retainAll( Collection<?> collection) {
         return back.retainAll(collection);
     }
 
