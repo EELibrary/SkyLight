@@ -552,7 +552,7 @@
      }
  
      protected void tickPlayers()
-@@ -658,83 +814,76 @@
+@@ -658,83 +814,80 @@
          this.updateEntityTick = 0;
      }
  
@@ -574,8 +574,12 @@
 -                throw new IllegalStateException("TickNextTick list out of synch");
 +            // TODO: Check if this condition should be always false(HashTreeSet from CB related)
 +            if (i != this.pendingTickListEntriesHashSet.size()) {
-+                LOGGER.warn("TickNextTick list out of synch");
++                LOGGER.warn("TickNextTick list out of synch!Trying continue ticking.");
 +                //If i > pendingTickListEntriesHashSet.size() this action won't be executed
++                if(iterating.get()){
++                    LOGGER.warn("Can not continue ticking!Because the tick list treeset was iterating.");
++                    return false;
++                }
 +                edit.set(true);
 +                pendingTickListEntriesTreeSet.clear();
 +                pendingTickListEntriesTreeSet.addAll(pendingTickListEntriesHashSet);
@@ -690,7 +694,7 @@
      }
  
      @Nullable
-@@ -747,12 +896,17 @@
+@@ -747,12 +900,17 @@
          int l = k + 16 + 2;
          return this.getPendingBlockUpdates(new StructureBoundingBox(i, 0, k, j, 256, l), remove);
      }
@@ -710,7 +714,7 @@
          for (int i = 0; i < 2; ++i)
          {
              Iterator<NextTickListEntry> iterator;
-@@ -765,37 +919,42 @@
+@@ -765,37 +923,42 @@
              {
                  iterator = this.pendingTickListEntriesThisTick.iterator();
              }
@@ -770,7 +774,7 @@
      public void updateEntityWithOptionalForce(Entity entityIn, boolean forceUpdate)
      {
          if (!this.canSpawnAnimals() && (entityIn instanceof EntityAnimal || entityIn instanceof EntityWaterMob))
-@@ -810,6 +969,7 @@
+@@ -810,6 +973,7 @@
  
          super.updateEntityWithOptionalForce(entityIn, forceUpdate);
      }
@@ -778,7 +782,7 @@
  
      private boolean canSpawnNPCs()
      {
-@@ -824,11 +984,68 @@
+@@ -824,11 +988,68 @@
      protected IChunkProvider createChunkProvider()
      {
          IChunkLoader ichunkloader = this.saveHandler.getChunkLoader(this.provider);
@@ -848,7 +852,7 @@
          return !this.mcServer.isBlockProtected(this, pos, player) && this.getWorldBorder().contains(pos);
      }
  
-@@ -894,6 +1111,7 @@
+@@ -894,6 +1115,7 @@
          }
          else
          {
@@ -856,7 +860,7 @@
              this.findingSpawnPoint = true;
              BiomeProvider biomeprovider = this.provider.getBiomeProvider();
              List<Biome> list = biomeprovider.getBiomesToSpawnIn();
-@@ -903,6 +1121,23 @@
+@@ -903,6 +1125,23 @@
              int j = this.provider.getAverageGroundLevel();
              int k = 8;
  
@@ -880,7 +884,7 @@
              if (blockpos != null)
              {
                  i = blockpos.getX();
-@@ -915,7 +1150,7 @@
+@@ -915,7 +1154,7 @@
  
              int l = 0;
  
@@ -889,7 +893,7 @@
              {
                  i += random.nextInt(64) - random.nextInt(64);
                  k += random.nextInt(64) - random.nextInt(64);
-@@ -966,6 +1201,7 @@
+@@ -966,6 +1205,7 @@
  
          if (chunkproviderserver.canSave())
          {
@@ -897,7 +901,7 @@
              if (progressCallback != null)
              {
                  progressCallback.displaySavingString("Saving level");
-@@ -979,14 +1215,17 @@
+@@ -979,14 +1219,17 @@
              }
  
              chunkproviderserver.saveChunks(all);
@@ -916,7 +920,7 @@
          }
      }
  
-@@ -1012,6 +1251,12 @@
+@@ -1012,6 +1255,12 @@
              }
          }
  
@@ -929,7 +933,7 @@
          this.worldInfo.setBorderSize(this.getWorldBorder().getDiameter());
          this.worldInfo.getBorderCenterX(this.getWorldBorder().getCenterX());
          this.worldInfo.getBorderCenterZ(this.getWorldBorder().getCenterZ());
-@@ -1023,18 +1268,20 @@
+@@ -1023,18 +1272,20 @@
          this.worldInfo.setBorderLerpTime(this.getWorldBorder().getTimeUntilTarget());
          this.saveHandler.saveWorldInfoWithPlayer(this.worldInfo, this.mcServer.getPlayerList().getHostPlayerData());
          this.mapStorage.saveAllData();
@@ -954,7 +958,7 @@
              {
                  this.loadedEntityList.add(entity);
                  this.onEntityAdded(entity);
-@@ -1046,7 +1293,7 @@
+@@ -1046,7 +1297,7 @@
      {
          if (entityIn.isDead)
          {
@@ -963,7 +967,7 @@
              return false;
          }
          else
-@@ -1065,7 +1312,7 @@
+@@ -1065,7 +1316,7 @@
                  {
                      if (!(entityIn instanceof EntityPlayer))
                      {
@@ -972,7 +976,7 @@
                          return false;
                      }
  
-@@ -1082,15 +1329,19 @@
+@@ -1082,15 +1333,19 @@
      public void onEntityAdded(Entity entityIn)
      {
          super.onEntityAdded(entityIn);
@@ -996,7 +1000,7 @@
              }
          }
      }
-@@ -1098,24 +1349,37 @@
+@@ -1098,24 +1353,37 @@
      public void onEntityRemoved(Entity entityIn)
      {
          super.onEntityRemoved(entityIn);
@@ -1039,7 +1043,7 @@
              return true;
          }
          else
-@@ -1136,10 +1400,18 @@
+@@ -1136,10 +1404,18 @@
  
      public Explosion newExplosion(@Nullable Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
      {
@@ -1059,7 +1063,7 @@
          if (!isSmoking)
          {
              explosion.clearAffectedBlockPositions();
-@@ -1182,7 +1454,8 @@
+@@ -1182,7 +1458,8 @@
              {
                  if (this.fireBlockEvent(blockeventdata))
                  {
@@ -1069,7 +1073,7 @@
                  }
              }
  
-@@ -1208,27 +1481,31 @@
+@@ -1208,27 +1485,31 @@
  
          if (this.prevRainingStrength != this.rainingStrength)
          {
@@ -1107,7 +1111,7 @@
          }
      }
  
-@@ -1265,11 +1542,18 @@
+@@ -1265,11 +1546,18 @@
  
      public void spawnParticle(EnumParticleTypes particleType, boolean longDistance, double xCoord, double yCoord, double zCoord, int numberOfParticles, double xOffset, double yOffset, double zOffset, double particleSpeed, int... particleArguments)
      {
@@ -1126,7 +1130,7 @@
              this.sendPacketWithinDistance(entityplayermp, longDistance, xCoord, yCoord, zCoord, spacketparticles);
          }
      }
-@@ -1323,6 +1607,11 @@
+@@ -1323,6 +1611,11 @@
          return this.functionManager;
      }
  
