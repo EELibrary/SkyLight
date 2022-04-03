@@ -5,7 +5,7 @@
      private int threshold = 12;
      private final float growFactor = 0.75F;
 -
-+    private final IntHashMap mutex = this;
++    private final Object mutex = this;
      private static int computeHash(int integer)
      {
          integer = integer ^ integer >>> 20 ^ integer >>> 12;

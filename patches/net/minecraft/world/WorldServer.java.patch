@@ -983,54 +983,33 @@
                          return false;
                      }
  
-@@ -1082,15 +1339,19 @@
-     public void onEntityAdded(Entity entityIn)
-     {
-         super.onEntityAdded(entityIn);
--        this.entitiesById.addKey(entityIn.getEntityId(), entityIn);
-+        synchronized (this.entitiesById) {
-+            this.entitiesById.addKey(entityIn.getEntityId(), entityIn);
-+        }
+@@ -1086,10 +1343,8 @@
          this.entitiesByUuid.put(entityIn.getUniqueID(), entityIn);
          Entity[] aentity = entityIn.getParts();
  
-         if (aentity != null)
-         {
+-        if (aentity != null)
+-        {
 -            for (Entity entity : aentity)
 -            {
--                this.entitiesById.addKey(entity.getEntityId(), entity);
-+            synchronized (this.entitiesById){
-+                for (Entity entity : aentity)
-+                {
-+                    this.entitiesById.addKey(entity.getEntityId(), entity);
-+                }
++        if (aentity != null) {
++            for (Entity entity : aentity) {
+                 this.entitiesById.addKey(entity.getEntityId(), entity);
              }
          }
-     }
-@@ -1098,24 +1359,37 @@
-     public void onEntityRemoved(Entity entityIn)
-     {
-         super.onEntityRemoved(entityIn);
--        this.entitiesById.removeObject(entityIn.getEntityId());
-+        synchronized (this.entitiesById) {
-+            this.entitiesById.removeObject(entityIn.getEntityId());
-+        }
+@@ -1102,10 +1357,8 @@
          this.entitiesByUuid.remove(entityIn.getUniqueID());
          Entity[] aentity = entityIn.getParts();
  
-         if (aentity != null)
-         {
+-        if (aentity != null)
+-        {
 -            for (Entity entity : aentity)
 -            {
--                this.entitiesById.removeObject(entity.getEntityId());
-+            synchronized (this.entitiesById){
-+                for (Entity entity : aentity)
-+                {
-+                    this.entitiesById.removeObject(entity.getEntityId());
-+                }
++        if (aentity != null) {
++            for (Entity entity : aentity) {
+                 this.entitiesById.removeObject(entity.getEntityId());
              }
          }
-     }
+@@ -1113,9 +1366,18 @@
  
      public boolean addWeatherEffect(Entity entityIn)
      {
@@ -1050,7 +1029,7 @@
              return true;
          }
          else
-@@ -1136,10 +1410,18 @@
+@@ -1136,10 +1398,18 @@
  
      public Explosion newExplosion(@Nullable Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
      {
@@ -1070,7 +1049,7 @@
          if (!isSmoking)
          {
              explosion.clearAffectedBlockPositions();
-@@ -1182,7 +1464,8 @@
+@@ -1182,7 +1452,8 @@
              {
                  if (this.fireBlockEvent(blockeventdata))
                  {
@@ -1080,7 +1059,7 @@
                  }
              }
  
-@@ -1208,27 +1491,31 @@
+@@ -1208,27 +1479,31 @@
  
          if (this.prevRainingStrength != this.rainingStrength)
          {
@@ -1118,7 +1097,7 @@
          }
      }
  
-@@ -1265,11 +1552,18 @@
+@@ -1265,11 +1540,18 @@
  
      public void spawnParticle(EnumParticleTypes particleType, boolean longDistance, double xCoord, double yCoord, double zCoord, int numberOfParticles, double xOffset, double yOffset, double zOffset, double particleSpeed, int... particleArguments)
      {
@@ -1137,7 +1116,7 @@
              this.sendPacketWithinDistance(entityplayermp, longDistance, xCoord, yCoord, zCoord, spacketparticles);
          }
      }
-@@ -1323,6 +1617,11 @@
+@@ -1323,6 +1605,11 @@
          return this.functionManager;
      }
  

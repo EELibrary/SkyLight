@@ -49,7 +49,7 @@
      {
          return allowEmpty || !this.getChunkProvider().provideChunk(x, z).isEmpty();
      }
-@@ -245,21 +249,19 @@
+@@ -245,20 +249,16 @@
      public void addEntityToWorld(int entityID, Entity entityToSpawn)
      {
          Entity entity = this.getEntityByID(entityID);
@@ -67,23 +67,14 @@
              this.entitySpawnQueue.add(entityToSpawn);
          }
 -
--        this.entitiesById.addKey(entityID, entityToSpawn);
-+        synchronized (this.entitiesById){
-+            this.entitiesById.addKey(entityID, entityToSpawn);
-+        }
+         this.entitiesById.addKey(entityID, entityToSpawn);
      }
  
-     @Nullable
-@@ -270,8 +272,10 @@
- 
+@@ -271,7 +271,6 @@
      public Entity removeEntityFromWorld(int entityID)
      {
--        Entity entity = this.entitiesById.removeObject(entityID);
+         Entity entity = this.entitiesById.removeObject(entityID);
 -
-+        Entity entity = null;
-+        synchronized (this.entitiesById){
-+            entity = this.entitiesById.removeObject(entityID);
-+        }
          if (entity != null)
          {
              this.entityList.remove(entity);
