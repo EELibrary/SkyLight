@@ -1135,15 +1135,17 @@
              this.sendPacketWithinDistance(entityplayermp, longDistance, xCoord, yCoord, zCoord, spacketparticles);
          }
      }
-@@ -1323,6 +1620,11 @@
+@@ -1323,7 +1620,12 @@
          return this.functionManager;
      }
  
+-    static class ServerBlockEventList extends ArrayList<BlockEventData>
 +    public File getChunkSaveLocation()
 +    {
 +        return ((net.minecraft.world.chunk.storage.AnvilChunkLoader)getChunkProvider().chunkLoader).chunkSaveLocation;
 +    }
 +
-     static class ServerBlockEventList extends ArrayList<BlockEventData>
++    static class ServerBlockEventList extends CopyOnWriteArrayList<BlockEventData>
          {
              private ServerBlockEventList()
+             {
