@@ -68,7 +68,7 @@
          }
          else if (entityIn instanceof EntityEnderCrystal)
          {
-@@ -213,51 +216,19 @@
+@@ -213,51 +216,20 @@
          this.track(entityIn, trackingRange, updateFrequency, false);
      }
  
@@ -78,11 +78,13 @@
 -        {
 -            if (this.trackedEntityHashTable.containsItem(entityIn.getEntityId()))
 -            {
+-                throw new IllegalStateException("Entity is already tracked!");
 +    public void track(Entity entityIn, int trackingRange, final int updateFrequency, boolean sendVelocityUpdates) {
 +        trackingRange = org.spigotmc.TrackingRange.getEntityTrackingRange(entityIn, trackingRange); // Spigot
 +        try {
 +            if (this.trackedEntityHashTable.containsItem(entityIn.getEntityId())) {
-                 throw new IllegalStateException("Entity is already tracked!");
++                LOGGER.warn("Entity is already tracked!");
++                return;
              }
 -
              EntityTrackerEntry entitytrackerentry = new EntityTrackerEntry(entityIn, trackingRange, this.maxTrackingDistanceThreshold, updateFrequency, sendVelocityUpdates);
@@ -126,7 +128,7 @@
      }
  
      public void untrack(Entity entityIn)
-@@ -272,7 +243,10 @@
+@@ -272,7 +244,10 @@
              }
          }
  
@@ -138,7 +140,7 @@
  
          if (entitytrackerentry1 != null)
          {
-@@ -280,38 +254,33 @@
+@@ -280,38 +255,33 @@
              entitytrackerentry1.sendDestroyEntityPacketToTrackedPlayers();
          }
      }
@@ -199,7 +201,7 @@
      }
  
      public void updateVisibility(EntityPlayerMP player)
-@@ -339,6 +308,25 @@
+@@ -339,6 +309,25 @@
          }
      }
  
@@ -225,7 +227,7 @@
      public void sendToTrackingAndSelf(Entity entityIn, Packet<?> packetIn)
      {
          EntityTrackerEntry entitytrackerentry = this.trackedEntityHashTable.lookup(entityIn.getEntityId());
-@@ -359,8 +347,8 @@
+@@ -359,8 +348,8 @@
  
      public void sendLeashedEntitiesInChunk(EntityPlayerMP player, Chunk chunkIn)
      {
