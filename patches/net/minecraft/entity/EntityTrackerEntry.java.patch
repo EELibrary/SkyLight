@@ -226,7 +226,7 @@
 +                        }
 +                    }
 +
-+                    playerMP.entityRemoveQueue.remove(Integer.valueOf(this.trackedEntity.getEntityId()));
++                    playerMP.queuedEvents.add(()->playerMP.entityRemoveQueue.remove(Integer.valueOf(this.trackedEntity.getEntityId())));
 +                    // CraftBukkit end
                      this.trackingPlayers.add(playerMP);
                      Packet<?> packet = this.createSpawnPacket();

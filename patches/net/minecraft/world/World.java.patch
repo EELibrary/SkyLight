@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/world/World.java
 +++ ../src-work/minecraft/net/minecraft/world/World.java
-@@ -4,14 +4,18 @@
+@@ -4,14 +4,15 @@
  import com.google.common.base.MoreObjects;
  import com.google.common.base.Predicate;
  import com.google.common.collect.Lists;
@@ -12,10 +12,7 @@
 -import java.util.UUID;
 +
 +import java.util.*;
-+import java.util.concurrent.CopyOnWriteArrayList;
-+import java.util.concurrent.Executors;
-+import java.util.concurrent.ThreadPoolExecutor;
-+import java.util.concurrent.TimeUnit;
++import java.util.concurrent.*;
 +import java.util.concurrent.locks.Lock;
 +import java.util.concurrent.locks.ReentrantLock;
  import java.util.function.Supplier;
@@ -25,7 +22,7 @@
  import net.minecraft.advancements.AdvancementManager;
  import net.minecraft.advancements.FunctionManager;
  import net.minecraft.block.Block;
-@@ -24,12 +28,22 @@
+@@ -24,12 +25,22 @@
  import net.minecraft.crash.ICrashReportDetail;
  import net.minecraft.entity.Entity;
  import net.minecraft.entity.EntityLiving;
@@ -48,7 +45,7 @@
  import net.minecraft.pathfinding.PathWorldListener;
  import net.minecraft.profiler.Profiler;
  import net.minecraft.scoreboard.Scoreboard;
-@@ -43,38 +57,55 @@
+@@ -43,38 +54,55 @@
  import net.minecraft.util.ReportedException;
  import net.minecraft.util.SoundCategory;
  import net.minecraft.util.SoundEvent;
@@ -118,7 +115,7 @@
      protected final IntHashMap<Entity> entitiesById = new IntHashMap<Entity>();
      private final long cloudColour = 16777215L;
      private int skylightSubtracted;
-@@ -86,31 +117,148 @@
+@@ -86,31 +114,148 @@
      public float thunderingStrength;
      private int lastLightningBolt;
      public final Random rand = new Random();
@@ -274,7 +271,7 @@
          this.calendar = Calendar.getInstance();
          this.worldScoreboard = new Scoreboard();
          this.spawnHostileMobs = true;
-@@ -122,6 +270,10 @@
+@@ -122,6 +267,10 @@
          this.provider = providerIn;
          this.isRemote = client;
          this.worldBorder = providerIn.createWorldBorder();
@@ -285,7 +282,7 @@
      }
  
      public World init()
-@@ -131,6 +283,11 @@
+@@ -131,6 +280,11 @@
  
      public Biome getBiome(final BlockPos pos)
      {
@@ -297,7 +294,7 @@
          if (this.isBlockLoaded(pos))
          {
              Chunk chunk = this.getChunkFromBlockCoords(pos);
-@@ -207,7 +364,7 @@
+@@ -207,7 +361,7 @@
  
      public boolean isAirBlock(BlockPos pos)
      {
@@ -306,7 +303,7 @@
      }
  
      public boolean isBlockLoaded(BlockPos pos)
-@@ -278,7 +435,7 @@
+@@ -278,7 +432,7 @@
          }
      }
  
@@ -315,7 +312,7 @@
  
      public Chunk getChunkFromBlockCoords(BlockPos pos)
      {
-@@ -297,6 +454,26 @@
+@@ -297,6 +451,26 @@
  
      public boolean setBlockState(BlockPos pos, IBlockState newState, int flags)
      {
@@ -342,7 +339,7 @@
          if (this.isOutsideBuildHeight(pos))
          {
              return false;
-@@ -308,24 +485,53 @@
+@@ -308,24 +482,53 @@
          else
          {
              Chunk chunk = this.getChunkFromBlockCoords(pos);
@@ -399,7 +396,7 @@
                      this.notifyBlockUpdate(pos, iblockstate, newState, flags);
                  }
  
-@@ -342,8 +548,6 @@
+@@ -342,8 +545,6 @@
                  {
                      this.updateObservingBlocksAt(pos, block);
                  }
@@ -408,7 +405,7 @@
              }
          }
      }
-@@ -358,7 +562,7 @@
+@@ -358,7 +559,7 @@
          IBlockState iblockstate = this.getBlockState(pos);
          Block block = iblockstate.getBlock();
  
@@ -417,7 +414,7 @@
          {
              return false;
          }
-@@ -382,9 +586,8 @@
+@@ -382,9 +583,8 @@
  
      public void notifyBlockUpdate(BlockPos pos, IBlockState oldState, IBlockState newState, int flags)
      {
@@ -429,7 +426,7 @@
          }
      }
  
-@@ -392,6 +595,9 @@
+@@ -392,6 +592,9 @@
      {
          if (this.worldInfo.getTerrainType() != WorldType.DEBUG_ALL_BLOCK_STATES)
          {
@@ -439,7 +436,7 @@
              this.notifyNeighborsOfStateChange(pos, blockType, p_175722_3_);
          }
      }
-@@ -441,6 +647,9 @@
+@@ -441,6 +644,9 @@
  
      public void notifyNeighborsOfStateChange(BlockPos pos, Block blockType, boolean updateObservers)
      {
@@ -449,7 +446,7 @@
          this.neighborChanged(pos.west(), blockType, pos);
          this.neighborChanged(pos.east(), blockType, pos);
          this.neighborChanged(pos.down(), blockType, pos);
-@@ -456,6 +665,11 @@
+@@ -456,6 +662,11 @@
  
      public void notifyNeighborsOfStateExcept(BlockPos pos, Block blockType, EnumFacing skipSide)
      {
@@ -461,7 +458,7 @@
          if (skipSide != EnumFacing.WEST)
          {
              this.neighborChanged(pos.west(), blockType, pos);
-@@ -495,6 +709,15 @@
+@@ -495,6 +706,15 @@
  
              try
              {
@@ -477,7 +474,7 @@
                  iblockstate.neighborChanged(this, pos, blockIn, fromPos);
              }
              catch (Throwable throwable)
-@@ -507,7 +730,7 @@
+@@ -507,7 +727,7 @@
                      {
                          try
                          {
@@ -486,7 +483,7 @@
                          }
                          catch (Throwable var2)
                          {
-@@ -527,12 +750,17 @@
+@@ -527,12 +747,17 @@
          {
              IBlockState iblockstate = this.getBlockState(pos);
  
@@ -506,7 +503,7 @@
                  catch (Throwable throwable)
                  {
                      CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Exception while updating neighbours");
-@@ -588,7 +816,7 @@
+@@ -588,7 +813,7 @@
                  {
                      IBlockState iblockstate = this.getBlockState(blockpos1);
  
@@ -515,7 +512,7 @@
                      {
                          return false;
                      }
-@@ -849,12 +1077,24 @@
+@@ -849,12 +1074,24 @@
  
      public IBlockState getBlockState(BlockPos pos)
      {
@@ -540,7 +537,7 @@
              Chunk chunk = this.getChunkFromBlockCoords(pos);
              return chunk.getBlockState(pos);
          }
-@@ -862,7 +1102,7 @@
+@@ -862,7 +1099,7 @@
  
      public boolean isDaytime()
      {
@@ -549,7 +546,7 @@
      }
  
      @Nullable
-@@ -1065,6 +1305,13 @@
+@@ -1065,6 +1302,13 @@
  
      public void playSound(@Nullable EntityPlayer player, double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch)
      {
@@ -563,7 +560,7 @@
          for (int i = 0; i < this.eventListeners.size(); ++i)
          {
              ((IWorldEventListener)this.eventListeners.get(i)).playSoundToAllNearExcept(player, soundIn, category, x, y, z, volume, pitch);
-@@ -1112,17 +1359,76 @@
+@@ -1112,59 +1356,122 @@
  
      public boolean addWeatherEffect(Entity entityIn)
      {
@@ -582,18 +579,18 @@
 +        // CraftBukkit start - Used for entities other than creatures
 +        return addEntity(entityIn, CreatureSpawnEvent.SpawnReason.DEFAULT);
 +    }
- 
--        if (entityIn instanceof EntityPlayer)
++    private final Object mutex = new Object();
 +    public boolean addEntity(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
-+        if (catserver.server.AsyncCatcher.checkAsync("add entity")) return catserver.server.AsyncCatcher.ensureExecuteOnPrimaryThread(() -> addEntity(entity, spawnReason)); // CatServer
 +        if (entity == null) return false;
-+
 +        org.bukkit.event.Cancellable event = null;
 +        if (entity instanceof EntityLivingBase && !(entity instanceof EntityPlayerMP)) {
 +            boolean isAnimal = entity instanceof EntityAnimal || entity instanceof EntityWaterMob || entity instanceof EntityGolem;
 +            boolean isMonster = entity instanceof EntityMob || entity instanceof EntityGhast || entity instanceof EntitySlime;
 +            boolean isNpc = entity instanceof NPC;
-+
+ 
+-        if (entityIn instanceof EntityPlayer)
+-        {
+-            flag = true;
 +            if (spawnReason != CreatureSpawnEvent.SpawnReason.CUSTOM) {
 +                if (isAnimal && !spawnPeacefulMobs || isMonster && !spawnHostileMobs || isNpc && !getServer().getServer().getCanSpawnNPCs()) {
 +                    entity.isDead = true;
@@ -607,9 +604,9 @@
 +        } else if (entity.getBukkitEntity() instanceof org.bukkit.entity.Projectile) {
 +            // Not all projectiles extend EntityProjectile, so check for Bukkit interface instead
 +            event = CraftEventFactory.callProjectileLaunchEvent(entity);
-+        } else if (entity.getBukkitEntity() instanceof org.bukkit.entity.Vehicle){
++        } else if (entity.getBukkitEntity() instanceof org.bukkit.entity.Vehicle) {
 +            event = CraftEventFactory.callVehicleCreateEvent(entity);
-+        }
+         }
 +        // Spigot start
 +        else if (entity instanceof EntityXPOrb) {
 +            EntityXPOrb xp = (EntityXPOrb) entity;
@@ -627,32 +624,36 @@
 +                }
 +            }
 +        } // Spigot end
-+
+ 
+-        if (!flag && !this.isChunkLoaded(i, j, false))
+-        {
 +        if (event != null && (event.isCancelled() || entity.isDead)) {
 +            entity.isDead = true;
-+            return false;
-+        }
+             return false;
+         }
+-        else
+-        {
+-            if (entityIn instanceof EntityPlayer)
+-            {
+-                EntityPlayer entityplayer = (EntityPlayer)entityIn;
 +        // CraftBukkit end
 +        // do not drop any items while restoring blocksnapshots. Prevents dupes
-+        if (!this.isRemote && (entity == null || (entity instanceof net.minecraft.entity.item.EntityItem && this.restoringBlockSnapshots))) return false;
++        if (!this.isRemote && (entity == null || (entity instanceof net.minecraft.entity.item.EntityItem && this.restoringBlockSnapshots)))
++            return false;
 +
 +        int i = MathHelper.floor(entity.posX / 16.0D);
 +        int j = MathHelper.floor(entity.posZ / 16.0D);
 +        boolean flag = entity.forceSpawn;
 +
-+        if (entity instanceof EntityPlayer)
-         {
-             flag = true;
-         }
-@@ -1133,16 +1439,18 @@
-         }
-         else
-         {
--            if (entityIn instanceof EntityPlayer)
-+            if (entity instanceof EntityPlayer)
-             {
--                EntityPlayer entityplayer = (EntityPlayer)entityIn;
-+                EntityPlayer entityplayer = (EntityPlayer)entity;
++        if (entity instanceof EntityPlayer) {
++            flag = true;
++        }
++
++        if (!flag && !this.isChunkLoaded(i, j, false)) {
++            return false;
++        } else {
++            if (entity instanceof EntityPlayer) {
++                EntityPlayer entityplayer = (EntityPlayer) entity;
                  this.playerEntities.add(entityplayer);
                  this.updateAllPlayersSleepingFlag();
              }
@@ -660,7 +661,8 @@
 -            this.getChunkFromChunkCoords(i, j).addEntity(entityIn);
 -            this.loadedEntityList.add(entityIn);
 -            this.onEntityAdded(entityIn);
-+            if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityJoinWorldEvent(entity, this)) && !flag) return false;
++            if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityJoinWorldEvent(entity, this)) && !flag)
++                return false;
 +
 +            this.getChunkFromChunkCoords(i, j).addEntity(entity);
 +            this.loadedEntityList.add(entity);
@@ -668,18 +670,31 @@
              return true;
          }
      }
-@@ -1153,6 +1461,8 @@
-         {
-             ((IWorldEventListener)this.eventListeners.get(i)).onEntityAdded(entityIn);
+-
++    private Entity cacheAdd = null;
+     public void onEntityAdded(Entity entityIn)
+     {
+-        for (int i = 0; i < this.eventListeners.size(); ++i)
+-        {
+-            ((IWorldEventListener)this.eventListeners.get(i)).onEntityAdded(entityIn);
++        if(cacheAdd == null){cacheAdd = entityIn;}
++        synchronized(mutex) {
++            if(entityIn.equals(cacheAdd)){return;}
++            for (IWorldEventListener eventListener : this.eventListeners) {
++                ((IWorldEventListener) eventListener).onEntityAdded(entityIn);
++            }
++            entityIn.onAddedToWorld();
++            entityIn.valid = true;
          }
-+        entityIn.onAddedToWorld();
-+        entityIn.valid = true;
      }
  
      public void onEntityRemoved(Entity entityIn)
-@@ -1161,10 +1471,13 @@
-         {
-             ((IWorldEventListener)this.eventListeners.get(i)).onEntityRemoved(entityIn);
+     {
+-        for (int i = 0; i < this.eventListeners.size(); ++i)
+-        {
+-            ((IWorldEventListener)this.eventListeners.get(i)).onEntityRemoved(entityIn);
++        for (IWorldEventListener eventListener : this.eventListeners) {
++            ((IWorldEventListener) eventListener).onEntityRemoved(entityIn);
          }
 +        entityIn.onRemovedFromWorld();
 +        entityIn.valid = false;
@@ -691,7 +706,7 @@
          if (entityIn.isBeingRidden())
          {
              entityIn.removePassengers();
-@@ -1187,6 +1500,7 @@
+@@ -1187,6 +1494,7 @@
  
      public void removeEntityDangerously(Entity entityIn)
      {
@@ -699,7 +714,7 @@
          entityIn.setDropItemsWhenDead(false);
          entityIn.setDead();
  
-@@ -1203,7 +1517,6 @@
+@@ -1203,7 +1511,6 @@
          {
              this.getChunkFromChunkCoords(i, j).removeEntity(entityIn);
          }
@@ -707,7 +722,7 @@
          this.loadedEntityList.remove(entityIn);
          this.onEntityRemoved(entityIn);
      }
-@@ -1227,6 +1540,7 @@
+@@ -1227,6 +1534,7 @@
          IBlockState iblockstate = Blocks.STONE.getDefaultState();
          BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain();
  
@@ -715,7 +730,7 @@
          try
          {
              for (int k1 = i; k1 < j; ++k1)
-@@ -1269,7 +1583,7 @@
+@@ -1269,7 +1577,7 @@
  
                                  iblockstate1.addCollisionBoxToList(this, blockpos$pooledmutableblockpos, aabb, outList, entityIn, false);
  
@@ -724,7 +739,7 @@
                                  {
                                      boolean flag5 = true;
                                      return flag5;
-@@ -1319,11 +1633,10 @@
+@@ -1319,11 +1627,10 @@
                  }
              }
          }
@@ -737,7 +752,7 @@
      public void removeEventListener(IWorldEventListener listener)
      {
          this.eventListeners.remove(listener);
-@@ -1361,19 +1674,38 @@
+@@ -1361,19 +1668,38 @@
  
      public int calculateSkylightSubtracted(float partialTicks)
      {
@@ -778,7 +793,7 @@
          float f = this.getCelestialAngle(partialTicks);
          float f1 = 1.0F - (MathHelper.cos(f * ((float)Math.PI * 2F)) * 2.0F + 0.2F);
          f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
-@@ -1386,6 +1718,12 @@
+@@ -1386,6 +1712,12 @@
      @SideOnly(Side.CLIENT)
      public Vec3d getSkyColor(Entity entityIn, float partialTicks)
      {
@@ -791,7 +806,7 @@
          float f = this.getCelestialAngle(partialTicks);
          float f1 = MathHelper.cos(f * ((float)Math.PI * 2F)) * 2.0F + 0.5F;
          f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
-@@ -1393,9 +1731,7 @@
+@@ -1393,9 +1725,7 @@
          int j = MathHelper.floor(entityIn.posY);
          int k = MathHelper.floor(entityIn.posZ);
          BlockPos blockpos = new BlockPos(i, j, k);
@@ -802,7 +817,7 @@
          float f3 = (float)(l >> 16 & 255) / 255.0F;
          float f4 = (float)(l >> 8 & 255) / 255.0F;
          float f5 = (float)(l & 255) / 255.0F;
-@@ -1444,20 +1780,25 @@
+@@ -1444,20 +1774,25 @@
  
      public float getCelestialAngle(float partialTicks)
      {
@@ -831,7 +846,7 @@
      public float getCelestialAngleRadians(float partialTicks)
      {
          float f = this.getCelestialAngle(partialTicks);
-@@ -1467,6 +1808,12 @@
+@@ -1467,6 +1802,12 @@
      @SideOnly(Side.CLIENT)
      public Vec3d getCloudColour(float partialTicks)
      {
@@ -844,7 +859,7 @@
          float f = this.getCelestialAngle(partialTicks);
          float f1 = MathHelper.cos(f * ((float)Math.PI * 2F)) * 2.0F + 0.5F;
          f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
-@@ -1522,9 +1869,9 @@
+@@ -1522,9 +1863,9 @@
          for (blockpos = new BlockPos(pos.getX(), chunk.getTopFilledSegment() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1)
          {
              blockpos1 = blockpos.down();
@@ -856,7 +871,7 @@
              {
                  break;
              }
-@@ -1536,6 +1883,12 @@
+@@ -1536,6 +1877,12 @@
      @SideOnly(Side.CLIENT)
      public float getStarBrightness(float partialTicks)
      {
@@ -869,7 +884,7 @@
          float f = this.getCelestialAngle(partialTicks);
          float f1 = 1.0F - (MathHelper.cos(f * ((float)Math.PI * 2F)) * 2.0F + 0.25F);
          f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
-@@ -1558,202 +1911,208 @@
+@@ -1558,202 +1905,208 @@
      public void scheduleBlockUpdate(BlockPos pos, Block blockIn, int delay, int priority)
      {
      }
@@ -1200,7 +1215,7 @@
          this.profiler.endSection();
          this.profiler.endSection();
      }
-@@ -1764,12 +2123,18 @@
+@@ -1764,12 +2117,18 @@
  
      public boolean addTileEntity(TileEntity tile)
      {
@@ -1219,7 +1234,7 @@
  
          if (this.isRemote)
          {
-@@ -1785,6 +2150,11 @@
+@@ -1785,6 +2144,11 @@
      {
          if (this.processingLoadedTiles)
          {
@@ -1231,7 +1246,7 @@
              this.addedTileEntityList.addAll(tileEntityCollection);
          }
          else
-@@ -1807,14 +2177,26 @@
+@@ -1807,14 +2171,26 @@
          {
              int j2 = MathHelper.floor(entityIn.posX);
              int k2 = MathHelper.floor(entityIn.posZ);
@@ -1260,7 +1275,7 @@
          entityIn.lastTickPosX = entityIn.posX;
          entityIn.lastTickPosY = entityIn.posY;
          entityIn.lastTickPosZ = entityIn.posZ;
-@@ -1831,7 +2213,9 @@
+@@ -1831,7 +2207,9 @@
              }
              else
              {
@@ -1270,7 +1285,7 @@
              }
          }
  
-@@ -1910,11 +2294,8 @@
+@@ -1910,11 +2288,8 @@
      {
          List<Entity> list = this.getEntitiesWithinAABBExcludingEntity((Entity)null, bb);
  
@@ -1284,7 +1299,7 @@
              {
                  return false;
              }
-@@ -1972,6 +2353,12 @@
+@@ -1972,6 +2347,12 @@
                  {
                      IBlockState iblockstate1 = this.getBlockState(blockpos$pooledmutableblockpos.setPos(l3, i4, j4));
  
@@ -1297,7 +1312,7 @@
                      if (iblockstate1.getMaterial().isLiquid())
                      {
                          blockpos$pooledmutableblockpos.release();
-@@ -2011,6 +2398,11 @@
+@@ -2011,6 +2392,11 @@
                              blockpos$pooledmutableblockpos.release();
                              return true;
                          }
@@ -1309,7 +1324,7 @@
                      }
                  }
              }
-@@ -2050,6 +2442,16 @@
+@@ -2050,6 +2436,16 @@
                          IBlockState iblockstate1 = this.getBlockState(blockpos$pooledmutableblockpos);
                          Block block = iblockstate1.getBlock();
  
@@ -1326,7 +1341,7 @@
                          if (iblockstate1.getMaterial() == materialIn)
                          {
                              double d0 = (double)((float)(i4 + 1) - BlockLiquid.getLiquidHeightPercent(((Integer)iblockstate1.getValue(BlockLiquid.LEVEL)).intValue()));
-@@ -2095,7 +2497,14 @@
+@@ -2095,7 +2491,14 @@
              {
                  for (int j4 = j3; j4 < k3; ++j4)
                  {
@@ -1342,7 +1357,7 @@
                      {
                          blockpos$pooledmutableblockpos.release();
                          return true;
-@@ -2116,6 +2525,7 @@
+@@ -2116,6 +2519,7 @@
      public Explosion newExplosion(@Nullable Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
      {
          Explosion explosion = new Explosion(this, entityIn, x, y, z, strength, isFlaming, isSmoking);
@@ -1350,7 +1365,7 @@
          explosion.doExplosionA();
          explosion.doExplosionB(true);
          return explosion;
-@@ -2206,7 +2616,7 @@
+@@ -2206,7 +2610,7 @@
                  tileentity2 = this.getPendingTileEntityAt(pos);
              }
  
@@ -1359,7 +1374,7 @@
              {
                  tileentity2 = this.getChunkFromBlockCoords(pos).getTileEntity(pos, Chunk.EnumCreateEntityType.IMMEDIATE);
              }
-@@ -2238,6 +2648,7 @@
+@@ -2238,6 +2642,7 @@
  
      public void setTileEntity(BlockPos pos, @Nullable TileEntity tileEntityIn)
      {
@@ -1367,7 +1382,7 @@
          if (!this.isOutsideBuildHeight(pos))
          {
              if (tileEntityIn != null && !tileEntityIn.isInvalid())
-@@ -2245,24 +2656,29 @@
+@@ -2245,24 +2650,29 @@
                  if (this.processingLoadedTiles)
                  {
                      tileEntityIn.setPos(pos);
@@ -1404,7 +1419,7 @@
                      this.addTileEntity(tileEntityIn);
                  }
              }
-@@ -2277,6 +2693,8 @@
+@@ -2277,6 +2687,8 @@
          {
              tileentity2.invalidate();
              this.addedTileEntityList.remove(tileentity2);
@@ -1413,7 +1428,7 @@
          }
          else
          {
-@@ -2289,6 +2707,7 @@
+@@ -2289,6 +2701,7 @@
  
              this.getChunkFromBlockCoords(pos).removeTileEntity(pos);
          }
@@ -1421,7 +1436,7 @@
      }
  
      public void markTileEntityForRemoval(TileEntity tileEntityIn)
-@@ -2315,7 +2734,7 @@
+@@ -2315,7 +2728,7 @@
              if (chunk1 != null && !chunk1.isEmpty())
              {
                  IBlockState iblockstate1 = this.getBlockState(pos);
@@ -1430,7 +1445,7 @@
              }
              else
              {
-@@ -2338,6 +2757,7 @@
+@@ -2338,6 +2751,7 @@
      {
          this.spawnHostileMobs = hostile;
          this.spawnPeacefulMobs = peaceful;
@@ -1438,7 +1453,7 @@
      }
  
      public void tick()
-@@ -2347,6 +2767,11 @@
+@@ -2347,6 +2761,11 @@
  
      protected void calculateInitialWeather()
      {
@@ -1450,7 +1465,7 @@
          if (this.worldInfo.isRaining())
          {
              this.rainingStrength = 1.0F;
-@@ -2360,6 +2785,11 @@
+@@ -2360,6 +2779,11 @@
  
      protected void updateWeather()
      {
@@ -1462,7 +1477,7 @@
          if (this.provider.hasSkyLight())
          {
              if (!this.isRemote)
-@@ -2451,6 +2881,11 @@
+@@ -2451,6 +2875,11 @@
                  }
  
                  this.rainingStrength = MathHelper.clamp(this.rainingStrength, 0.0F, 1.0F);
@@ -1474,7 +1489,7 @@
              }
          }
      }
-@@ -2484,6 +2919,11 @@
+@@ -2484,6 +2913,11 @@
  
      public boolean canBlockFreeze(BlockPos pos, boolean noWaterAdj)
      {
@@ -1486,7 +1501,7 @@
          Biome biome = this.getBiome(pos);
          float f = biome.getTemperature(pos);
  
-@@ -2525,6 +2965,11 @@
+@@ -2525,6 +2959,11 @@
  
      public boolean canSnowAt(BlockPos pos, boolean checkLight)
      {
@@ -1498,7 +1513,7 @@
          Biome biome = this.getBiome(pos);
          float f = biome.getTemperature(pos);
  
-@@ -2542,7 +2987,7 @@
+@@ -2542,7 +2981,7 @@
              {
                  IBlockState iblockstate1 = this.getBlockState(pos);
  
@@ -1507,7 +1522,7 @@
                  {
                      return true;
                  }
-@@ -2574,10 +3019,10 @@
+@@ -2574,10 +3013,10 @@
          else
          {
              IBlockState iblockstate1 = this.getBlockState(pos);
@@ -1521,7 +1536,7 @@
              {
                  k2 = 1;
              }
-@@ -2589,7 +3034,7 @@
+@@ -2589,7 +3028,7 @@
  
              if (k2 >= 15)
              {
@@ -1530,7 +1545,7 @@
              }
              else if (j2 >= 14)
              {
-@@ -2630,12 +3075,16 @@
+@@ -2630,12 +3069,16 @@
  
      public boolean checkLightFor(EnumSkyBlock lightType, BlockPos pos)
      {
@@ -1548,7 +1563,7 @@
              int j2 = 0;
              int k2 = 0;
              this.profiler.startSection("getBrightness");
-@@ -2673,7 +3122,7 @@
+@@ -2673,7 +3116,7 @@
                              int l5 = MathHelper.abs(k4 - k3);
                              int i6 = MathHelper.abs(l4 - l3);
  
@@ -1557,7 +1572,7 @@
                              {
                                  BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain();
  
-@@ -2683,7 +3132,8 @@
+@@ -2683,7 +3126,8 @@
                                      int k6 = k4 + enumfacing.getFrontOffsetY();
                                      int l6 = l4 + enumfacing.getFrontOffsetZ();
                                      blockpos$pooledmutableblockpos.setPos(j6, k6, l6);
@@ -1567,7 +1582,7 @@
                                      j5 = this.getLightFor(lightType, blockpos$pooledmutableblockpos);
  
                                      if (j5 == i5 - i7 && k2 < this.lightUpdateBlockList.length)
-@@ -2725,7 +3175,7 @@
+@@ -2725,7 +3169,7 @@
                          int j9 = Math.abs(i8 - l3);
                          boolean flag = k2 < this.lightUpdateBlockList.length - 6;
  
@@ -1576,7 +1591,7 @@
                          {
                              if (this.getLightFor(lightType, blockpos2.west()) < k8)
                              {
-@@ -2791,10 +3241,10 @@
+@@ -2791,10 +3235,10 @@
      public List<Entity> getEntitiesInAABBexcluding(@Nullable Entity entityIn, AxisAlignedBB boundingBox, @Nullable Predicate <? super Entity > predicate)
      {
          List<Entity> list = Lists.<Entity>newArrayList();
@@ -1591,7 +1606,7 @@
  
          for (int j3 = j2; j3 <= k2; ++j3)
          {
-@@ -2847,11 +3297,11 @@
+@@ -2847,11 +3291,11 @@
  
      public <T extends Entity> List<T> getEntitiesWithinAABB(Class <? extends T > clazz, AxisAlignedBB aabb, @Nullable Predicate <? super T > filter)
      {
@@ -1608,7 +1623,7 @@
  
          for (int j3 = j2; j3 < k2; ++j3)
          {
-@@ -2919,7 +3369,16 @@
+@@ -2919,7 +3363,16 @@
  
          for (Entity entity4 : this.loadedEntityList)
          {
@@ -1626,7 +1641,7 @@
              {
                  ++j2;
              }
-@@ -2930,11 +3389,17 @@
+@@ -2930,11 +3383,17 @@
  
      public void loadEntities(Collection<Entity> entityCollection)
      {
@@ -1647,7 +1662,7 @@
          }
      }
  
-@@ -2948,18 +3413,24 @@
+@@ -2948,18 +3407,24 @@
          IBlockState iblockstate1 = this.getBlockState(pos);
          AxisAlignedBB axisalignedbb = skipCollisionCheck ? null : blockIn.getDefaultState().getCollisionBoundingBox(this, pos);
  
@@ -1676,7 +1691,7 @@
      }
  
      public int getSeaLevel()
-@@ -3042,7 +3513,7 @@
+@@ -3042,7 +3507,7 @@
      public int getRedstonePower(BlockPos pos, EnumFacing facing)
      {
          IBlockState iblockstate1 = this.getBlockState(pos);
@@ -1685,7 +1700,7 @@
      }
  
      public boolean isBlockPowered(BlockPos pos)
-@@ -3124,6 +3595,12 @@
+@@ -3124,6 +3589,12 @@
          {
              EntityPlayer entityplayer1 = this.playerEntities.get(j2);
  
@@ -1698,7 +1713,7 @@
              if (p_190525_9_.apply(entityplayer1))
              {
                  double d1 = entityplayer1.getDistanceSq(x, y, z);
-@@ -3208,6 +3685,8 @@
+@@ -3208,6 +3679,8 @@
                      d2 *= ((Double)MoreObjects.firstNonNull(playerToDouble.apply(entityplayer1), Double.valueOf(1.0D))).doubleValue();
                  }
  
@@ -1707,7 +1722,7 @@
                  if ((maxYDistance < 0.0D || Math.abs(entityplayer1.posY - posY) < maxYDistance * maxYDistance) && (maxXZDistance < 0.0D || d1 < d2 * d2) && (d0 == -1.0D || d1 < d0))
                  {
                      d0 = d1;
-@@ -3269,7 +3748,7 @@
+@@ -3269,7 +3742,7 @@
  
      public long getSeed()
      {
@@ -1716,7 +1731,7 @@
      }
  
      public long getTotalWorldTime()
-@@ -3279,17 +3758,17 @@
+@@ -3279,17 +3752,17 @@
  
      public long getWorldTime()
      {
@@ -1737,7 +1752,7 @@
  
          if (!this.getWorldBorder().contains(blockpos1))
          {
-@@ -3301,7 +3780,7 @@
+@@ -3301,7 +3774,7 @@
  
      public void setSpawnPoint(BlockPos pos)
      {
@@ -1746,7 +1761,7 @@
      }
  
      @SideOnly(Side.CLIENT)
-@@ -3321,12 +3800,18 @@
+@@ -3321,12 +3794,18 @@
  
          if (!this.loadedEntityList.contains(entityIn))
          {
@@ -1765,7 +1780,7 @@
          return true;
      }
  
-@@ -3363,6 +3848,16 @@
+@@ -3363,6 +3842,16 @@
      {
      }
  
@@ -1782,7 +1797,7 @@
      public float getThunderStrength(float delta)
      {
          return (this.prevThunderingStrength + (this.thunderingStrength - this.prevThunderingStrength) * delta) * this.getRainStrength(delta);
-@@ -3428,8 +3923,7 @@
+@@ -3428,8 +3917,7 @@
  
      public boolean isBlockinHighHumidity(BlockPos pos)
      {
@@ -1792,7 +1807,7 @@
      }
  
      @Nullable
-@@ -3490,12 +3984,12 @@
+@@ -3490,12 +3978,12 @@
  
      public int getHeight()
      {
@@ -1807,7 +1822,7 @@
      }
  
      public Random setRandomSeed(int p_72843_1_, int p_72843_2_, int p_72843_3_)
-@@ -3539,7 +4033,7 @@
+@@ -3539,7 +4027,7 @@
      @SideOnly(Side.CLIENT)
      public double getHorizon()
      {
@@ -1816,7 +1831,7 @@
      }
  
      public void sendBlockBreakProgress(int breakerId, BlockPos pos, int progress)
-@@ -3573,7 +4067,7 @@
+@@ -3573,7 +4061,7 @@
  
      public void updateComparatorOutputLevel(BlockPos pos, Block blockIn)
      {
@@ -1825,7 +1840,7 @@
          {
              BlockPos blockpos1 = pos.offset(enumfacing);
  
-@@ -3581,18 +4075,15 @@
+@@ -3581,18 +4069,15 @@
              {
                  IBlockState iblockstate1 = this.getBlockState(blockpos1);
  
@@ -1848,7 +1863,7 @@
                      }
                  }
              }
-@@ -3655,9 +4146,127 @@
+@@ -3655,9 +4140,127 @@
          int j2 = x * 16 + 8 - blockpos1.getX();
          int k2 = z * 16 + 8 - blockpos1.getZ();
          int l2 = 128;
