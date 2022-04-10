@@ -1,5 +1,23 @@
 --- ../src-base/minecraft/net/minecraft/village/VillageSiege.java
 +++ ../src-work/minecraft/net/minecraft/village/VillageSiege.java
+@@ -93,7 +93,7 @@
+     private boolean trySetupSiege()
+     {
+         List<EntityPlayer> list = this.world.playerEntities;
+-        Iterator iterator = list.iterator();
++        Iterator<EntityPlayer> iterator = list.iterator();
+ 
+         while (true)
+         {
+@@ -102,7 +102,7 @@
+                 return false;
+             }
+ 
+-            EntityPlayer entityplayer = (EntityPlayer)iterator.next();
++            EntityPlayer entityplayer = iterator.next();
+ 
+             if (!entityplayer.isSpectator())
+             {
 @@ -146,6 +146,7 @@
  
                      if (vec3d != null)
