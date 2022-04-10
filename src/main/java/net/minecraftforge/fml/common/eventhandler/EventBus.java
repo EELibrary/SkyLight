@@ -178,10 +178,10 @@ public class EventBus implements IEventExceptionHandler
         }
         lock1.unlock();
     }
-    Lock lock = new ReentrantLock();
+    Lock lockInkove = new ReentrantLock();
     public boolean post(Event event)
     {
-        lock.lock();
+
         if (shutdown) return false;
 
         // CatServer start - CatAPI implement
@@ -194,6 +194,7 @@ public class EventBus implements IEventExceptionHandler
         int index = 0;
         try
         {
+            lockInkove.lock();
             for (; index < listeners.length; index++)
             {
                 listeners[index].invoke(event);
@@ -204,8 +205,9 @@ public class EventBus implements IEventExceptionHandler
             exceptionHandler.handleException(this, event, listeners, index, throwable);
             Throwables.throwIfUnchecked(throwable);
             throw new RuntimeException(throwable);
+        }finally {
+            lockInkove.unlock();
         }
-        lock.unlock();
         return event.isCancelable() && event.isCanceled();
     }
 

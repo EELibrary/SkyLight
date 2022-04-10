@@ -73,7 +73,6 @@ public class ASMEventHandler implements IEventListener
             }
         }
     }
-    ThreadPoolExecutor eventExecutor = new ThreadPoolExecutor(4,Integer.MAX_VALUE,Long.MAX_VALUE, TimeUnit.DAYS,new LinkedBlockingDeque<>());
     @SuppressWarnings("rawtypes")
     @Override
     public void invoke(Event event) {

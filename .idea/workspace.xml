@@ -22,10 +22,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="Bug fixes">
+    <list default="true" id="1eb34f65-9bea-42f2-aa6d-73ec83fb71c7" name="Changes" comment="删了一个锁">
+      <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/village/VillageSiege.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/village/VillageSiege.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/WorldServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/WorldServer.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/EventBus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/EventBus.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,7 +161,7 @@
       <recent name="util" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.SkyLight [genPatches build]">
+  <component name="RunManager" selected="Gradle.skylight [genPatches]">
     <configuration name="SkyLight [genPatches build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -268,9 +270,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.SkyLight [genPatches build]" />
-        <item itemvalue="Gradle.skylight [build]" />
         <item itemvalue="Gradle.skylight [genPatches]" />
+        <item itemvalue="Gradle.skylight [build]" />
+        <item itemvalue="Gradle.SkyLight [genPatches build]" />
         <item itemvalue="Gradle.SkyLight [setup]" />
         <item itemvalue="Gradle.SkyLight [patchCatserverJar]" />
       </list>
@@ -565,7 +567,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649502895470</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Air">
+      <created>1649570978062</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1649570978062</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -592,8 +601,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove all" />
-    <MESSAGE value="Some updates" />
     <MESSAGE value="thread safe update" />
     <MESSAGE value="emmmm" />
     <MESSAGE value="remove some bug fix" />
@@ -617,6 +624,8 @@
     <MESSAGE value="Add api" />
     <MESSAGE value="CME fix" />
     <MESSAGE value="Bug fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bug fixes" />
+    <MESSAGE value="Air" />
+    <MESSAGE value="删了一个锁" />
+    <option name="LAST_COMMIT_MESSAGE" value="删了一个锁" />
   </component>
 </project>
