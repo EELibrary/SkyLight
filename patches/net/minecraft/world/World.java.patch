@@ -108,8 +108,8 @@
 +    public final List<Entity> loadedEntityList = new CopyOnWriteArrayList<>();
 +    protected final List<Entity> unloadedEntityList = new CopyOnWriteArrayList<>();
 +    public final List<TileEntity> loadedTileEntityList = new CopyOnWriteArrayList<>();
-+    public final List<TileEntity> tickableTileEntities = Collections.synchronizedList(new ArrayList());
-+    private final List<TileEntity> addedTileEntityList = Collections.synchronizedList(new ArrayList());
++    public final List<TileEntity> tickableTileEntities = new CopyOnWriteArrayList<>();
++    private final List<TileEntity> addedTileEntityList = new CopyOnWriteArrayList<>();
 +    private final List<TileEntity> tileEntitiesToBeRemoved = new CopyOnWriteArrayList<>();
 +    public final List<EntityPlayer> playerEntities = new CopyOnWriteArrayList<>();
 +    public final List<Entity> weatherEffects = new CopyOnWriteArrayList<>();
