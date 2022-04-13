@@ -928,7 +928,7 @@
 +            }
 +        }
 +        public static void init(){
-+            pool = new ForkJoinPool(DedicatedServer.settings.getIntProperty("EntitiesWotkerThreadCount",Runtime.getRuntime().availableProcessors()));
++            pool = new ForkJoinPool(DedicatedServer.settings.getIntProperty("EntitiesWorkerThreadCount",Runtime.getRuntime().availableProcessors()));
 +        }
 +        //借用了一下cnblogs的一个帖子 @https://www.cnblogs.com/lixuwu/p/7979480.html
 +        public static final class EntityTask<T> extends RecursiveAction {
