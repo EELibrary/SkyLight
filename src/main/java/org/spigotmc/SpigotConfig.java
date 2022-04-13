@@ -29,8 +29,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.novau2333.ssapi.commands.ServerStatusCommand;
-import org.novau2333.ssapi.commands.SetEntitiesPerThreadCommand;
-
 public class SpigotConfig
 {
 
@@ -264,7 +262,6 @@ public class SpigotConfig
     private static void tpsCommand()
     {
         commands.put( "skstatus", new ServerStatusCommand());
-        commands.put("setentitiesperthread", new SetEntitiesPerThreadCommand("setentitiesperthread"));
         commands.put( "tps", new TicksPerSecondCommand( "tps" ) );
     }
 
