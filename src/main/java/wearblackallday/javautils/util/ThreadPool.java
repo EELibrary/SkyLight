@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -15,7 +14,7 @@ import java.util.stream.Stream;
 public class ThreadPool {
 	private ThreadPoolExecutor executor;
 	private final int threadCount;
-	private final AtomicInteger  activeCount = new AtomicInteger(0);
+	private final IntLatch activeCount = new IntLatch();
 
 	public ThreadPool() {
 		this(Runtime.getRuntime().availableProcessors());
@@ -31,7 +30,7 @@ public class ThreadPool {
 	}
 
 	public int getActiveCount() {
-		return this.activeCount.get();
+		return this.activeCount.getCount();
 	}
 
 	public ThreadPoolExecutor getExecutor() {
@@ -39,15 +38,13 @@ public class ThreadPool {
 	}
 
 	public void execute(Runnable action) {
-		this.activeCount.incrementAndGet();
+		this.activeCount.increment();
 
 		this.executor.execute(() -> {
 			try {
 				action.run();
-			}catch(Exception e){
-				e.printStackTrace();
-			} finally {
-			  this.activeCount.decrementAndGet();
+			}finally {
+			  this.activeCount.decrement();
 			}
 		});
 	}
@@ -110,15 +107,22 @@ public class ThreadPool {
 
 	public void execute(char[] array, Consumer<Character> action) {
 		for(char t : array) this.execute(() -> action.accept(t));
+		//new Long2ObjectOpenHashMap<>().r
+	}
+
+	public void awaitFreeThread() {
+		this.waitFor(value -> value < this.getThreadCount());
 	}
 
 	public void awaitCompletion() {
-		while(this.activeCount.get()!=0){
-			try {
-				Thread.sleep(0,1);
-			}catch(InterruptedException e){
-				e.printStackTrace();
-			}
+		this.waitFor(value -> value == 0);
+	}
+
+	public void waitFor(IntPredicate condition) {
+		try {
+			this.activeCount.waitUntil(condition);
+		} catch(InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -136,4 +140,35 @@ public class ThreadPool {
 		return this.executor.isShutdown();
 	}
 
+	private static class IntLatch {
+		private CountDownLatch latch;
+
+		private IntLatch() {
+			this(0);
+		}
+
+		private IntLatch(int count) {
+			this.latch = new CountDownLatch(count);
+		}
+
+		private synchronized int getCount() {
+			return (int)this.latch.getCount();
+		}
+
+		private synchronized void decrement() {
+			this.latch.countDown();
+			this.notifyAll();
+		}
+
+		private synchronized void increment() {
+			this.latch = new CountDownLatch((int)this.latch.getCount() + 1);
+			this.notifyAll();
+		}
+
+		private synchronized void waitUntil(IntPredicate predicate) throws InterruptedException {
+			while(!predicate.test(this.getCount())) {
+				this.wait();
+			}
+		}
+	}
 }
