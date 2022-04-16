@@ -69,9 +69,16 @@ public class FMLEmbeddedChannel extends EmbeddedChannel {
     public Packet<?> generatePacketFrom(Object object)
     {
         OutboundTarget outboundTarget = attr(FMLOutboundHandler.FML_MESSAGETARGET).getAndSet(OutboundTarget.NOWHERE);
-        writeOutbound(object);
-        Packet<?> pkt = (Packet<?>) outboundMessages().poll();
-        attr(FMLOutboundHandler.FML_MESSAGETARGET).set(outboundTarget);
+        Packet<?> pkt = null;
+        try {
+            writeOutbound(object);
+            pkt = (Packet<?>) outboundMessages().poll();
+            attr(FMLOutboundHandler.FML_MESSAGETARGET).set(outboundTarget);
+        } catch (Exception e) {
+            if(!(e instanceof NullPointerException)){
+                e.printStackTrace();
+            }
+        }
         return pkt;
     }
 
