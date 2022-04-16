@@ -1,0 +1,37 @@
+--- ../src-base/minecraft/net/minecraft/pathfinding/PathPoint.java
++++ ../src-work/minecraft/net/minecraft/pathfinding/PathPoint.java
+@@ -5,13 +5,15 @@
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
+ 
++import java.util.concurrent.atomic.AtomicInteger;
++
+ public class PathPoint
+ {
+     public final int x;
+     public final int y;
+     public final int z;
+     private final int hash;
+-    public int index = -1;
++    public final AtomicInteger index = new AtomicInteger(-1);
+     public float totalPathDistance;
+     public float distanceToNext;
+     public float distanceToTarget;
+@@ -33,7 +35,7 @@
+     public PathPoint cloneMove(int x, int y, int z)
+     {
+         PathPoint pathpoint = new PathPoint(x, y, z);
+-        pathpoint.index = this.index;
++        pathpoint.index.set(this.index.get());
+         pathpoint.totalPathDistance = this.totalPathDistance;
+         pathpoint.distanceToNext = this.distanceToNext;
+         pathpoint.distanceToTarget = this.distanceToTarget;
+@@ -95,7 +97,7 @@
+ 
+     public boolean isAssigned()
+     {
+-        return this.index >= 0;
++        return this.index.get() >= 0;
+     }
+ 
+     public String toString()

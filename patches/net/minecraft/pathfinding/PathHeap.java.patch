@@ -1,0 +1,82 @@
+--- ../src-base/minecraft/net/minecraft/pathfinding/PathHeap.java
++++ ../src-work/minecraft/net/minecraft/pathfinding/PathHeap.java
+@@ -7,7 +7,7 @@
+ 
+     public PathPoint addPoint(PathPoint point)
+     {
+-        if (point.index >= 0)
++        if (point.index.get() >= 0)
+         {
+             throw new IllegalStateException("OW KNOWS!");
+         }
+@@ -21,7 +21,7 @@
+             }
+ 
+             this.pathPoints[this.count] = point;
+-            point.index = this.count;
++            point.index.set(this.count);
+             this.sortBack(this.count++);
+             return point;
+         }
+@@ -43,7 +43,7 @@
+             this.sortForward(0);
+         }
+ 
+-        pathpoint.index = -1;
++        pathpoint.index.set(-1);
+         return pathpoint;
+     }
+ 
+@@ -54,11 +54,11 @@
+ 
+         if (distance < f)
+         {
+-            this.sortBack(point.index);
++            this.sortBack(point.index.get());
+         }
+         else
+         {
+-            this.sortForward(point.index);
++            this.sortForward(point.index.get());
+         }
+     }
+ 
+@@ -78,11 +78,11 @@
+             }
+ 
+             this.pathPoints[index] = pathpoint1;
+-            pathpoint1.index = index;
++            pathpoint1.index.set(index);
+         }
+ 
+         this.pathPoints[index] = pathpoint;
+-        pathpoint.index = index;
++        pathpoint.index.set(index);
+     }
+ 
+     private void sortForward(int index)
+@@ -124,7 +124,7 @@
+                 }
+ 
+                 this.pathPoints[index] = pathpoint1;
+-                pathpoint1.index = index;
++                pathpoint1.index.set(index);
+                 index = i;
+             }
+             else
+@@ -135,13 +135,13 @@
+                 }
+ 
+                 this.pathPoints[index] = pathpoint2;
+-                pathpoint2.index = index;
++                pathpoint2.index.set(index);
+                 index = j;
+             }
+         }
+ 
+         this.pathPoints[index] = pathpoint;
+-        pathpoint.index = index;
++        pathpoint.index.set(index);
+     }
+ 
+     public boolean isPathEmpty()
