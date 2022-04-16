@@ -153,6 +153,7 @@ public class FMLNetworkHandler
         {
             return null;
         }
+
         return channelPair.get(Side.SERVER).generatePacketFrom(new FMLMessage.EntitySpawnMessage(er, entity, er.getContainer()));
     }
 

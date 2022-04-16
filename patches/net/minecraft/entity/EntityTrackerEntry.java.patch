@@ -295,7 +295,7 @@
              }
          }
      }
-@@ -483,18 +567,16 @@
+@@ -483,19 +567,24 @@
  
      public void updatePlayerEntities(List<EntityPlayer> players)
      {
@@ -310,12 +310,17 @@
 +    @Nullable
      private Packet<?> createSpawnPacket()
      {
--        if (this.trackedEntity.isDead)
--        {
+         if (this.trackedEntity.isDead)
+         {
 -            LOGGER.warn("Fetching addPacket for removed entity");
--        }
++            // CraftBukkit start - Remove useless error spam, just return
++            // LOGGER.warn("Fetching addPacket for removed entity");
++            return null;
+         }
+ 
 +        Packet pkt = net.minecraftforge.fml.common.network.internal.FMLNetworkHandler.getEntitySpawningPacket(this.trackedEntity);
 +        if (pkt != null) return pkt;
- 
++
          if (this.trackedEntity instanceof EntityPlayerMP)
          {
+             return new SPacketSpawnPlayer((EntityPlayer)this.trackedEntity);

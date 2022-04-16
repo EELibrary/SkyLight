@@ -182,15 +182,6 @@
              }
  
              this.neighbors[0] = 6146;
-@@ -774,7 +848,7 @@
-             pathpoint.totalPathDistance = 0.0F;
-             pathpoint.distanceToNext = 0.0F;
-             pathpoint.previous = null;
--            pathpoint.index = -1;
-+            pathpoint.index.set(-1);
-         }
- 
-         PathPoint pathpoint4 = this.pathPoints[startIdx];
 @@ -824,31 +898,33 @@
                  }
              }
