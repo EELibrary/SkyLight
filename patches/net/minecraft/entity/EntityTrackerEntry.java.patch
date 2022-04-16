@@ -207,7 +207,7 @@
          if (this.trackingPlayers.contains(playerMP))
          {
              this.trackedEntity.removeTrackingPlayer(playerMP);
-@@ -370,15 +424,33 @@
+@@ -370,15 +424,28 @@
  
      public void updatePlayerEntity(EntityPlayerMP playerMP)
      {
@@ -229,21 +229,15 @@
 +                    playerMP.queuedEvents.add(()->playerMP.entityRemoveQueue.remove(Integer.valueOf(this.trackedEntity.getEntityId())));
 +                    // CraftBukkit end
                      this.trackingPlayers.add(playerMP);
--                    Packet<?> packet = this.createSpawnPacket();
+                     Packet<?> packet = this.createSpawnPacket();
 -                    playerMP.connection.sendPacket(packet);
-+                    Packet<?> packet = null;
-+                    try {
-+                        packet = this.createSpawnPacket();
-+                    }catch (Throwable throwable) {
-+                        throwable.printStackTrace();
-+                    }
 +                    if(packet!=null){
 +                        playerMP.connection.sendPacket(packet);
 +                    }
  
                      if (!this.trackedEntity.getDataManager().isEmpty())
                      {
-@@ -392,6 +464,14 @@
+@@ -392,6 +459,14 @@
                          AttributeMap attributemap = (AttributeMap)((EntityLivingBase)this.trackedEntity).getAttributeMap();
                          Collection<IAttributeInstance> collection = attributemap.getWatchedAttributes();
  
@@ -258,7 +252,7 @@
                          if (!collection.isEmpty())
                          {
                              playerMP.connection.sendPacket(new SPacketEntityProperties(this.trackedEntity.getEntityId(), collection));
-@@ -407,9 +487,11 @@
+@@ -407,9 +482,11 @@
                      this.lastTrackedEntityMotionY = this.trackedEntity.motionY;
                      this.motionZ = this.trackedEntity.motionZ;
  
@@ -273,7 +267,7 @@
                      }
  
                      if (this.trackedEntity instanceof EntityLivingBase)
-@@ -435,6 +517,11 @@
+@@ -435,6 +512,11 @@
                          }
                      }
  
@@ -285,7 +279,7 @@
                      if (this.trackedEntity instanceof EntityLivingBase)
                      {
                          EntityLivingBase entitylivingbase = (EntityLivingBase)this.trackedEntity;
-@@ -457,6 +544,7 @@
+@@ -457,6 +539,7 @@
  
                      this.trackedEntity.addTrackingPlayer(playerMP);
                      playerMP.addEntity(this.trackedEntity);
@@ -293,7 +287,7 @@
                  }
              }
              else if (this.trackingPlayers.contains(playerMP))
-@@ -464,6 +552,7 @@
+@@ -464,6 +547,7 @@
                  this.trackingPlayers.remove(playerMP);
                  this.trackedEntity.removeTrackingPlayer(playerMP);
                  playerMP.removeEntity(this.trackedEntity);
@@ -301,7 +295,7 @@
              }
          }
      }
-@@ -483,18 +572,16 @@
+@@ -483,18 +567,16 @@
  
      public void updatePlayerEntities(List<EntityPlayer> players)
      {
