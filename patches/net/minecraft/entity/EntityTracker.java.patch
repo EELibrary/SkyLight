@@ -24,12 +24,13 @@
  import net.minecraft.util.math.MathHelper;
  import net.minecraft.world.WorldServer;
  import net.minecraft.world.chunk.Chunk;
-@@ -47,19 +47,20 @@
+@@ -47,19 +47,21 @@
  import net.minecraftforge.fml.relauncher.SideOnly;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
 -
 +import org.wangxyper.JavaUtils.ConcurrentExecutor;
++import org.wangxyper.JavaUtils.ForkJoinExecutor;
 +import wearblackallday.javautils.util.ThreadPool;
  public class EntityTracker
  {
@@ -50,7 +51,7 @@
      }
  
      public static long getPositionLong(double value)
-@@ -77,6 +78,8 @@
+@@ -77,6 +79,8 @@
  
      public void track(Entity entityIn)
      {
@@ -59,7 +60,7 @@
          if (entityIn instanceof EntityPlayerMP)
          {
              this.track(entityIn, 512, 2);
-@@ -196,7 +199,7 @@
+@@ -196,7 +200,7 @@
          }
          else if (entityIn instanceof EntityAreaEffectCloud)
          {
@@ -68,7 +69,7 @@
          }
          else if (entityIn instanceof EntityEnderCrystal)
          {
-@@ -213,63 +216,31 @@
+@@ -213,63 +217,28 @@
          this.track(entityIn, trackingRange, updateFrequency, false);
      }
  
@@ -127,7 +128,7 @@
 -        }
      }
 -
-+    private final ThreadPool executor = new ThreadPool();
++    private final ForkJoinExecutor<EntityTrackerEntry> executor = new ForkJoinExecutor<>();
      public void untrack(Entity entityIn)
      {
          if (entityIn instanceof EntityPlayerMP)
@@ -136,29 +137,21 @@
 -
 -            for (EntityTrackerEntry entitytrackerentry : this.entries)
 -            {
-+            executor.execute(this.entries,entitytrackerentry->{
-                 entitytrackerentry.removeFromTrackedPlayers(entityplayermp);
+-                entitytrackerentry.removeFromTrackedPlayers(entityplayermp);
 -            }
-+            });
-+            executor.awaitCompletion();
++            executor.runThenWait(this.entries,entitytrackerentry-> entitytrackerentry.removeFromTrackedPlayers(entityplayermp));
          }
  
          EntityTrackerEntry entitytrackerentry1 = this.trackedEntityHashTable.removeObject(entityIn.getEntityId());
-@@ -280,37 +251,35 @@
+@@ -280,38 +249,21 @@
              entitytrackerentry1.sendDestroyEntityPacketToTrackedPlayers();
          }
      }
 -
-     public void tick()
-     {
+-    public void tick()
+-    {
 -        List<EntityPlayerMP> list = Lists.<EntityPlayerMP>newArrayList();
-+        List<EntityPlayerMP> list = Collections.synchronizedList(Lists.<EntityPlayerMP>newArrayList());
-+        try {
-+            executor.execute(this.entries, (object) -> {
-+                object.updatePlayerList(this.world.playerEntities);
-+                if (object.playerEntitiesUpdated) {
-+                    Entity entity = object.getTrackedEntity();
- 
+-
 -        for (EntityTrackerEntry entitytrackerentry : this.entries)
 -        {
 -            entitytrackerentry.updatePlayerList(this.world.playerEntities);
@@ -170,16 +163,21 @@
 -                if (entity instanceof EntityPlayerMP)
 -                {
 -                    list.add((EntityPlayerMP)entity);
-+                    if (entity instanceof EntityPlayerMP) {
-+                        list.add((EntityPlayerMP) entity);
-+                    }
++    public void tick() {
++        executor.runThenWait(this.entries, (object) -> {
++            object.updatePlayerList(this.world.playerEntities);
++            if (object.playerEntitiesUpdated) {
++                Entity entity = object.getTrackedEntity();
++                if (entity instanceof EntityPlayerMP) {
++                    EntityPlayerMP target = (EntityPlayerMP) entity;
++                    executor.run(this.entries,entityTrackerEntry -> {
++                        if (entityTrackerEntry.getTrackedEntity() != target) {
++                            entityTrackerEntry.updatePlayerEntity(target);
++                        }
++                    });
                  }
--            }
-+            });
-+            executor.awaitCompletion();
-+        }catch (Exception e){
-+            e.printStackTrace();
-         }
+             }
+-        }
 -
 -        for (int i = 0; i < list.size(); ++i)
 -        {
@@ -190,22 +188,14 @@
 -                if (entitytrackerentry1.getTrackedEntity() != entityplayermp)
 -                {
 -                    entitytrackerentry1.updatePlayerEntity(entityplayermp);
-+        try {
-+            executor.execute(list, target -> {
-+                for (EntityTrackerEntry entitytrackerentry1 : this.entries) {
-+                    if (entitytrackerentry1.getTrackedEntity() != target) {
-+                        entitytrackerentry1.updatePlayerEntity(target);
-+                    }
-                 }
+-                }
 -            }
-+            });
-+            executor.awaitCompletion();
-+        }catch (Exception e){
-+            e.printStackTrace();
-         }
+-        }
++        });
      }
  
-@@ -339,6 +308,25 @@
+     public void updateVisibility(EntityPlayerMP player)
+@@ -339,6 +291,25 @@
          }
      }
  
@@ -231,7 +221,7 @@
      public void sendToTrackingAndSelf(Entity entityIn, Packet<?> packetIn)
      {
          EntityTrackerEntry entitytrackerentry = this.trackedEntityHashTable.lookup(entityIn.getEntityId());
-@@ -359,8 +347,8 @@
+@@ -359,8 +330,8 @@
  
      public void sendLeashedEntitiesInChunk(EntityPlayerMP player, Chunk chunkIn)
      {

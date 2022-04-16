@@ -69,7 +69,7 @@
              }
          }
  
-@@ -258,15 +279,21 @@
+@@ -258,6 +279,9 @@
          int l = MathHelper.ceil(this.entity.height);
          int i1 = k;
  
@@ -79,13 +79,7 @@
          for (int j1 = i - 1; j1 >= this.currentPath.getCurrentPathIndex(); --j1)
          {
              if (this.isDirectPathBetweenPoints(vec3d, this.currentPath.getVectorFromIndex(this.entity, j1), k, l, i1))
-             {
--                this.currentPath.setCurrentPathIndex(j1);
-+                if(currentPath!=null){
-+                    this.currentPath.setCurrentPathIndex(j1);
-+                }else{
-+                    continue;
-+                }
+@@ -266,7 +290,6 @@
                  break;
              }
          }
@@ -93,7 +87,7 @@
          this.checkForStuck(vec3d);
      }
  
-@@ -317,6 +344,7 @@
+@@ -317,6 +340,7 @@
  
      public void clearPath()
      {
