@@ -301,7 +301,7 @@
              }
          }
      }
-@@ -483,18 +572,16 @@
+@@ -483,18 +572,19 @@
  
      public void updatePlayerEntities(List<EntityPlayer> players)
      {
@@ -319,7 +319,9 @@
 -        if (this.trackedEntity.isDead)
 -        {
 -            LOGGER.warn("Fetching addPacket for removed entity");
--        }
++        if(this.trackedEntity == null){
++            return null;
+         }
 +        Packet pkt = net.minecraftforge.fml.common.network.internal.FMLNetworkHandler.getEntitySpawningPacket(this.trackedEntity);
 +        if (pkt != null) return pkt;
  

@@ -470,7 +470,7 @@
      public boolean isServerRunning()
      {
          return this.serverRunning;
-@@ -455,62 +545,134 @@
+@@ -455,62 +545,133 @@
          this.serverRunning = false;
      }
  
@@ -541,7 +541,6 @@
 +                Arrays.fill( recentTps, 20 );
 +                Server.init();
 +                long start = System.nanoTime(), lastTick = start - TICK_TIME, catchupTime = 0, curTime, wait, tickSection = start; // Paper - Further improve server tick loop\
-+                World.EntityWorker.init();
                  while (this.serverRunning)
                  {
 -                    long k = getCurrentTimeMillis();
@@ -634,7 +633,7 @@
          catch (Throwable throwable1)
          {
              LOGGER.error("Encountered an unexpected exception", throwable1);
-@@ -536,13 +698,13 @@
+@@ -536,13 +697,13 @@
                  LOGGER.error("We were unable to save this crash report to disk.");
              }
  
@@ -649,7 +648,7 @@
                  this.stopServer();
              }
              catch (Throwable throwable)
-@@ -551,6 +713,8 @@
+@@ -551,6 +712,8 @@
              }
              finally
              {
@@ -658,7 +657,7 @@
                  this.systemExitNow();
              }
          }
-@@ -577,6 +741,7 @@
+@@ -577,6 +740,7 @@
                  ImageIO.write(bufferedimage, "PNG", new ByteBufOutputStream(bytebuf));
                  ByteBuf bytebuf1 = Base64.encode(bytebuf);
                  response.setFavicon("data:image/png;base64," + bytebuf1.toString(StandardCharsets.UTF_8));
@@ -666,7 +665,7 @@
              }
              catch (Exception exception)
              {
-@@ -617,7 +782,10 @@
+@@ -617,7 +781,10 @@
  
      public void tick()
      {
@@ -677,7 +676,7 @@
          ++this.tickCounter;
  
          if (this.startProfiling)
-@@ -644,14 +812,17 @@
+@@ -644,14 +811,17 @@
  
              Collections.shuffle(Arrays.asList(agameprofile));
              this.statusResponse.getPlayers().setPlayers(agameprofile);
@@ -696,7 +695,7 @@
          }
  
          this.profiler.startSection("tallying");
-@@ -671,88 +842,119 @@
+@@ -671,88 +841,119 @@
  
          this.profiler.endSection();
          this.profiler.endSection();
@@ -878,7 +877,7 @@
          this.profiler.endSection();
      }
  
-@@ -763,8 +965,11 @@
+@@ -763,8 +964,11 @@
  
      public void startServerThread()
      {
@@ -891,7 +890,7 @@
      }
  
      public File getFile(String fileName)
-@@ -779,19 +984,23 @@
+@@ -779,19 +983,23 @@
  
      public WorldServer getWorld(int dimension)
      {
@@ -922,7 +921,7 @@
      }
  
      public int getCurrentPlayerCount()
-@@ -816,7 +1025,8 @@
+@@ -816,7 +1024,8 @@
  
      public String getServerModName()
      {
@@ -932,7 +931,7 @@
      }
  
      public CrashReport addServerInfoToCrashReport(CrashReport report)
-@@ -845,7 +1055,7 @@
+@@ -845,7 +1054,7 @@
  
      public List<String> getTabCompletions(ICommandSender sender, String input, @Nullable BlockPos pos, boolean hasTargetBlock)
      {
@@ -941,7 +940,7 @@
          boolean flag = input.startsWith("/");
  
          if (flag)
-@@ -862,11 +1072,9 @@
+@@ -862,11 +1071,9 @@
              {
                  if (CommandBase.doesStringStartWith(s2, s1))
                  {
@@ -954,7 +953,7 @@
          }
          else
          {
-@@ -879,22 +1087,24 @@
+@@ -879,22 +1086,24 @@
                  {
                      if (flag1 && !hasTargetBlock)
                      {
@@ -984,7 +983,7 @@
      }
  
      public String getName()
-@@ -904,7 +1114,8 @@
+@@ -904,7 +1113,8 @@
  
      public void sendMessage(ITextComponent component)
      {
@@ -994,7 +993,7 @@
      }
  
      public boolean canUseCommand(int permLevel, String commandName)
-@@ -947,13 +1158,11 @@
+@@ -947,13 +1157,11 @@
          this.folderName = name;
      }
  
@@ -1008,7 +1007,7 @@
      public String getWorldName()
      {
          return this.worldName;
-@@ -966,7 +1175,7 @@
+@@ -966,7 +1174,7 @@
  
      public void setDifficultyForAllWorlds(EnumDifficulty difficulty)
      {
@@ -1017,7 +1016,7 @@
          {
              if (worldserver1 != null)
              {
-@@ -1048,9 +1257,9 @@
+@@ -1048,9 +1256,9 @@
          playerSnooper.addClientStat("avg_tick_ms", Integer.valueOf((int)(MathHelper.average(this.tickTimeArray) * 1.0E-6D)));
          int l = 0;
  
@@ -1029,7 +1028,7 @@
              {
                  if (worldserver1 != null)
                  {
-@@ -1088,7 +1297,8 @@
+@@ -1088,7 +1296,8 @@
  
      public boolean isServerInOnlineMode()
      {
@@ -1039,7 +1038,7 @@
      }
  
      public void setOnlineMode(boolean online)
-@@ -1177,12 +1387,12 @@
+@@ -1177,12 +1386,12 @@
  
      public void setPlayerList(PlayerList list)
      {
@@ -1054,7 +1053,7 @@
          {
              worldserver1.getWorldInfo().setGameType(gameMode);
          }
-@@ -1224,7 +1434,7 @@
+@@ -1224,7 +1433,7 @@
  
      public World getEntityWorld()
      {
@@ -1063,7 +1062,7 @@
      }
  
      public boolean isBlockProtected(World worldIn, BlockPos pos, EntityPlayer playerIn)
-@@ -1285,7 +1495,7 @@
+@@ -1285,7 +1494,7 @@
      @Nullable
      public Entity getEntityFromUuid(UUID uuid)
      {
@@ -1072,7 +1071,7 @@
          {
              if (worldserver1 != null)
              {
-@@ -1303,7 +1513,7 @@
+@@ -1303,7 +1512,7 @@
  
      public boolean sendCommandFeedback()
      {
@@ -1081,7 +1080,7 @@
      }
  
      public MinecraftServer getServer()
-@@ -1311,6 +1521,11 @@
+@@ -1311,6 +1520,11 @@
          return this;
      }
  
@@ -1093,7 +1092,7 @@
      public int getMaxWorldSize()
      {
          return 29999984;
-@@ -1320,15 +1535,14 @@
+@@ -1320,15 +1534,14 @@
      {
          Validate.notNull(callable);
  
@@ -1114,7 +1113,7 @@
          }
          else
          {
-@@ -1366,12 +1580,12 @@
+@@ -1366,12 +1579,12 @@
  
      public AdvancementManager getAdvancementManager()
      {
@@ -1129,7 +1128,7 @@
      }
  
      public void reload()
-@@ -1379,7 +1593,7 @@
+@@ -1379,7 +1592,7 @@
          if (this.isCallingFromMinecraftThread())
          {
              this.getPlayerList().saveAllPlayerData();
@@ -1138,7 +1137,7 @@
              this.getAdvancementManager().reload();
              this.getFunctionManager().reload();
              this.getPlayerList().reloadResources();
-@@ -1409,120 +1623,47 @@
+@@ -1409,120 +1622,47 @@
      }
  
      @SideOnly(Side.SERVER)
@@ -1285,7 +1284,7 @@
          }
          catch (Exception exception)
          {
-@@ -1539,7 +1680,8 @@
+@@ -1539,7 +1679,8 @@
      @SideOnly(Side.SERVER)
      public boolean isDebuggingEnabled()
      {
@@ -1295,7 +1294,7 @@
      }
  
      @SideOnly(Side.SERVER)
-@@ -1598,4 +1740,9 @@
+@@ -1598,4 +1739,9 @@
      {
          return this.serverThread;
      }
