@@ -6,19 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cdf662d7-1df1-4919-9910-f755ec50f06a" name="变更" comment="">
       <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/SkyLight.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/JavaUtils_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/Catserver/Catserver.iml" beforeDir="false" afterPath="$PROJECT_DIR$/projects/Catserver/Catserver.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/Clean/Clean.iml" beforeDir="false" afterPath="$PROJECT_DIR$/projects/Clean/Clean.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/projects.iml" beforeDir="false" afterPath="$PROJECT_DIR$/projects/projects.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/boss/EntityDragon.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/boss/EntityDragon.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/ASMEventHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/EventBus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/eventhandler/EventBus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/network/FMLEmbeddedChannel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/minecraftforge/fml/common/network/FMLEmbeddedChannel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +68,50 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Gradle.SkyLight [build]">
+    <configuration name="SkyLight [build genPatches]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+            <option value="genPatches" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="SkyLight [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="SkyLight [genPatches build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -99,8 +134,32 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="SkyLight [genPatches]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="genPatches" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.SkyLight [build]" />
+        <item itemvalue="Gradle.SkyLight [genPatches]" />
+        <item itemvalue="Gradle.SkyLight [build genPatches]" />
         <item itemvalue="Gradle.SkyLight [genPatches build]" />
       </list>
     </recent_temporary>
@@ -114,6 +173,34 @@
       <option name="presentableId" value="Default" />
       <updated>1650165403541</updated>
     </task>
+    <task id="LOCAL-00001" summary="重新使用ForkJoinPool">
+      <created>1650173457469</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1650173457469</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="重新使用ForkJoinPool" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.netty/netty-all/4.1.24.Final/c6c0d8d2f224ec0f21aac8e17dd4b8e5e4b92776/netty-all-4.1.24.Final-sources.jar!/io/netty/channel/AbstractChannelHandlerContext.java</url>
+          <line>765</line>
+          <properties class="io.netty.channel.AbstractChannelHandlerContext" method="invokeFlush">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

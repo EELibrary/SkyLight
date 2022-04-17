@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Nonnull;
 
@@ -143,7 +141,6 @@ public class EventBus implements IEventExceptionHandler {
         }
     }
 
-    Lock lock1 = new ReentrantLock();
 
     public void unregister(Object object) {
         try {
@@ -157,8 +154,6 @@ public class EventBus implements IEventExceptionHandler {
             FMLLog.log.error("Error unregistering event handler: {}", object, e);
         }
     }
-
-    Lock lockInkove = new ReentrantLock();
 
     public boolean post(Event event) {
 
