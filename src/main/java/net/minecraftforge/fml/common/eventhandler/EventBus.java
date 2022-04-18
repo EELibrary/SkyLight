@@ -111,7 +111,6 @@ public class EventBus implements IEventExceptionHandler {
     }
 
     private void register(Class<?> eventType, Object target, Method method, final ModContainer owner) {
-
         try {
             Constructor<?> ctr = eventType.getConstructor();
             ctr.setAccessible(true);
