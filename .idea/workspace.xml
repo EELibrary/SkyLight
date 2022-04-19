@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="Fix something">
-      <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/block/BlockObserver.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/block/BlockObserver.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/profiler/Profiler.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/profiler/Profiler.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/WorldServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/WorldServer.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/chunk/Chunk.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/chunk/Chunk.java.patch" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +72,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
-  <component name="RunManager" selected="Gradle.SkyLight [build]">
+  <component name="RunManager" selected="Gradle.SkyLight [genPatches] (1)">
     <configuration name="SkyLight [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -200,8 +194,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.SkyLight [build]" />
         <item itemvalue="Gradle.SkyLight [genPatches] (1)" />
+        <item itemvalue="Gradle.SkyLight [build]" />
         <item itemvalue="Gradle.SkyLight [setup]" />
         <item itemvalue="Gradle.SkyLight [genPatches]" />
         <item itemvalue="Gradle.SkyLight [genPatches build]" />
@@ -224,7 +218,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650328579102</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Fix something">
+      <created>1650349181345</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1650349181345</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

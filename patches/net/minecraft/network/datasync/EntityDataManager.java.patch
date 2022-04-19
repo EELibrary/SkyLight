@@ -1,6 +1,10 @@
 --- ../src-base/minecraft/net/minecraft/network/datasync/EntityDataManager.java
 +++ ../src-work/minecraft/net/minecraft/network/datasync/EntityDataManager.java
-@@ -10,6 +10,8 @@
+@@ -7,9 +7,12 @@
+ import java.io.IOException;
+ import java.util.List;
+ import java.util.Map;
++import java.util.concurrent.ConcurrentHashMap;
  import java.util.concurrent.locks.ReadWriteLock;
  import java.util.concurrent.locks.ReentrantReadWriteLock;
  import javax.annotation.Nullable;
@@ -9,16 +13,19 @@
  import net.minecraft.crash.CrashReport;
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.entity.Entity;
-@@ -26,7 +28,7 @@
+@@ -24,9 +27,9 @@
+ public class EntityDataManager
+ {
      private static final Logger LOGGER = LogManager.getLogger();
-     private static final Map < Class <? extends Entity > , Integer > NEXT_ID_MAP = Maps. < Class <? extends Entity > , Integer > newHashMap();
+-    private static final Map < Class <? extends Entity > , Integer > NEXT_ID_MAP = Maps. < Class <? extends Entity > , Integer > newHashMap();
++    private static final Map < Class <? extends Entity > , Integer > NEXT_ID_MAP = new ConcurrentHashMap<>();
      private final Entity entity;
 -    private final Map < Integer, EntityDataManager.DataEntry<? >> entries = Maps. < Integer, EntityDataManager.DataEntry<? >> newHashMap();
-+    private final Map < Integer, DataEntry<? >> entries = new Int2ObjectOpenHashMap<>(); // Paper
++    private final Map < Integer, DataEntry<? >> entries = new ConcurrentHashMap<>(); // Paper
      private final ReadWriteLock lock = new ReentrantReadWriteLock();
      private boolean empty = true;
      private boolean dirty;
-@@ -38,7 +40,7 @@
+@@ -38,7 +41,7 @@
  
      public static <T> DataParameter<T> createKey(Class <? extends Entity > clazz, DataSerializer<T> serializer)
      {
@@ -27,7 +34,7 @@
          {
              try
              {
-@@ -46,7 +48,9 @@
+@@ -46,7 +49,9 @@
  
                  if (!oclass.equals(clazz))
                  {
@@ -38,7 +45,7 @@
                  }
              }
              catch (ClassNotFoundException var5)
-@@ -115,21 +119,21 @@
+@@ -115,21 +120,21 @@
  
      private <T> void setEntry(DataParameter<T> key, T value)
      {
@@ -64,7 +71,7 @@
          }
          catch (Throwable throwable)
          {
-@@ -150,7 +154,7 @@
+@@ -150,7 +155,7 @@
  
      public <T> void set(DataParameter<T> key, T value)
      {
@@ -73,7 +80,7 @@
  
          if (ObjectUtils.notEqual(value, dataentry.getValue()))
          {
-@@ -172,7 +176,7 @@
+@@ -172,7 +177,7 @@
          return this.dirty;
      }
  
@@ -82,7 +89,7 @@
      {
          if (entriesIn != null)
          {
-@@ -180,7 +184,7 @@
+@@ -180,7 +185,7 @@
  
              for (int j = entriesIn.size(); i < j; ++i)
              {
@@ -91,7 +98,7 @@
                  writeEntry(buf, dataentry);
              }
          }
-@@ -189,15 +193,15 @@
+@@ -189,15 +194,15 @@
      }
  
      @Nullable
@@ -110,7 +117,7 @@
              {
                  if (dataentry.isDirty())
                  {
-@@ -205,7 +209,7 @@
+@@ -205,7 +210,7 @@
  
                      if (list == null)
                      {
@@ -119,7 +126,7 @@
                      }
  
                      list.add(dataentry.copy());
-@@ -223,7 +227,7 @@
+@@ -223,7 +228,7 @@
      {
          this.lock.readLock().lock();
  
@@ -128,7 +135,7 @@
          {
              writeEntry(buf, dataentry);
          }
-@@ -233,16 +237,16 @@
+@@ -233,16 +238,16 @@
      }
  
      @Nullable
@@ -149,7 +156,7 @@
              }
  
              list.add(dataentry.copy());
-@@ -252,7 +256,7 @@
+@@ -252,7 +257,7 @@
          return list;
      }
  
@@ -158,7 +165,7 @@
      {
          DataParameter<T> dataparameter = entry.getKey();
          int i = DataSerializers.getSerializerId(dataparameter.getSerializer());
-@@ -270,16 +274,16 @@
+@@ -270,16 +275,16 @@
      }
  
      @Nullable
@@ -178,7 +185,7 @@
              }
  
              int j = buf.readVarInt();
-@@ -290,20 +294,20 @@
+@@ -290,20 +295,20 @@
                  throw new DecoderException("Unknown serializer type " + j);
              }
  
@@ -203,7 +210,7 @@
  
              if (dataentry1 != null)
              {
-@@ -317,7 +321,7 @@
+@@ -317,7 +322,7 @@
      }
  
      @SideOnly(Side.CLIENT)
@@ -212,7 +219,7 @@
      {
          target.setValue((T)source.getValue());
      }
-@@ -332,7 +336,7 @@
+@@ -332,7 +337,7 @@
          this.dirty = false;
          this.lock.readLock().lock();
  
@@ -221,7 +228,7 @@
          {
              dataentry.setDirty(false);
          }
-@@ -378,9 +382,9 @@
+@@ -378,9 +383,9 @@
                  this.dirty = dirtyIn;
              }
  
