@@ -4,15 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="Fix something">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/novau2333/sser/ThreadedListTraverse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/novau2333/sser/forkjointasks/ListTraverseTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.9/fileHashes/fileHashes.lock" afterDir="false" />
+    <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="A little update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/server/MinecraftServer.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/border/WorldBorder.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/border/WorldBorder.java.patch" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,13 +73,12 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/MCreatorWorkspaces/killem" />
     <property name="project.structure.last.edited" value="项目" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
-  <component name="RunManager" selected="Gradle.SkyLight [genPatches build] (1)">
+  <component name="RunManager" selected="Gradle.SkyLight [genPatches] (2)">
     <configuration name="SkyLight [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -151,7 +143,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="SkyLight [genPatches]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SkyLight [genPatches] (2)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -208,11 +200,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.SkyLight [genPatches] (2)" />
         <item itemvalue="Gradle.SkyLight [genPatches build] (1)" />
         <item itemvalue="Gradle.SkyLight [genPatches] (1)" />
         <item itemvalue="Gradle.SkyLight [build]" />
         <item itemvalue="Gradle.SkyLight [setup]" />
-        <item itemvalue="Gradle.SkyLight [genPatches]" />
       </list>
     </recent_temporary>
   </component>
@@ -260,7 +252,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650370106431</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="A little update">
+      <created>1650428247949</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1650428247949</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -277,6 +276,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="TPS command update and add a lock when calling events" />
     <MESSAGE value="Fix something" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix something" />
+    <MESSAGE value="A little update" />
+    <option name="LAST_COMMIT_MESSAGE" value="A little update" />
   </component>
 </project>
