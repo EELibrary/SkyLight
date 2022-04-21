@@ -9,28 +9,12 @@
  import javax.annotation.Nullable;
  import net.minecraft.entity.Entity;
  import net.minecraft.entity.EntityLiving;
-@@ -11,8 +13,8 @@
+@@ -11,7 +13,7 @@
  public class PathFinder
  {
      private final PathHeap path = new PathHeap();
 -    private final Set<PathPoint> closedSet = Sets.<PathPoint>newHashSet();
--    private final PathPoint[] pathOptions = new PathPoint[32];
 +    private final Set<PathPoint> closedSet = ConcurrentHashMap.newKeySet();
-+    private final AtomicReference<PathPoint[]> pathOptions = new AtomicReference<>(new PathPoint[32]);
+     private final PathPoint[] pathOptions = new PathPoint[32];
      private final NodeProcessor nodeProcessor;
  
-     public PathFinder(NodeProcessor processor)
-@@ -79,11 +81,11 @@
-             }
- 
-             pathpoint1.visited = true;
--            int j = this.nodeProcessor.findPathOptions(this.pathOptions, pathpoint1, pathTo, maxDistance);
-+            int j = this.nodeProcessor.findPathOptions(this.pathOptions.get(), pathpoint1, pathTo, maxDistance);
- 
-             for (int k = 0; k < j; ++k)
-             {
--                PathPoint pathpoint2 = this.pathOptions[k];
-+                PathPoint pathpoint2 = this.pathOptions.get()[k];
-                 float f = pathpoint1.distanceManhattan(pathpoint2);
-                 pathpoint2.distanceFromOrigin = pathpoint1.distanceFromOrigin + f;
-                 pathpoint2.cost = f + pathpoint2.costMalus;

@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="A little update">
+    <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,6 +44,12 @@
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="forgegradle" type="c8890929:TasksNode$1" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="CatServer" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -61,6 +67,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="xe4npl2s" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -71,14 +80,40 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/MCreatorWorkspaces/killem" />
-    <property name="project.structure.last.edited" value="项目" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/projects/Catserver/src/main/java" />
+    <property name="project.structure.last.edited" value="库" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunManager" selected="Gradle.SkyLight [genPatches] (2)">
+  <component name="RunManager" selected="Gradle.SkyLight [genPatches]">
+    <configuration name="SkyLight [build] (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="SkyLight [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -100,7 +135,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="SkyLight [genPatches build] (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SkyLight [genIdeProjects]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -111,29 +146,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="genPatches" />
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="SkyLight [genPatches] (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="genPatches" />
+            <option value="genIdeProjects" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -164,7 +177,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="SkyLight [setup]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SkyLight [genPatches]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -175,7 +188,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="setup" />
+            <option value="genPatches" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -200,11 +213,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.SkyLight [genPatches] (2)" />
-        <item itemvalue="Gradle.SkyLight [genPatches build] (1)" />
-        <item itemvalue="Gradle.SkyLight [genPatches] (1)" />
+        <item itemvalue="Gradle.SkyLight [genPatches]" />
         <item itemvalue="Gradle.SkyLight [build]" />
-        <item itemvalue="Gradle.SkyLight [setup]" />
+        <item itemvalue="Gradle.SkyLight [genIdeProjects]" />
+        <item itemvalue="Gradle.SkyLight [build] (1)" />
+        <item itemvalue="Gradle.SkyLight [genPatches] (2)" />
       </list>
     </recent_temporary>
   </component>
@@ -259,7 +272,42 @@
       <option name="project" value="LOCAL" />
       <updated>1650428247949</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="A little update">
+      <created>1650434005307</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1650434005307</updated>
+    </task>
+    <task id="LOCAL-00008" summary="A little update">
+      <created>1650504762051</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1650504762051</updated>
+    </task>
+    <task id="LOCAL-00009" summary="A little update">
+      <created>1650537261576</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1650537261576</updated>
+    </task>
+    <task id="LOCAL-00010" summary="A little update">
+      <created>1650539846985</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1650539846985</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Revert &quot;A little update&quot;&#10;&#10;This reverts commit 9436075c">
+      <created>1650539867926</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1650539867926</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -277,6 +325,7 @@
     <MESSAGE value="TPS command update and add a lock when calling events" />
     <MESSAGE value="Fix something" />
     <MESSAGE value="A little update" />
-    <option name="LAST_COMMIT_MESSAGE" value="A little update" />
+    <MESSAGE value="Revert &quot;A little update&quot;&#10;&#10;This reverts commit 9436075c" />
+    <option name="LAST_COMMIT_MESSAGE" value="Revert &quot;A little update&quot;&#10;&#10;This reverts commit 9436075c" />
   </component>
 </project>
