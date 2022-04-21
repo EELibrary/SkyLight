@@ -1,6 +1,15 @@
 --- ../src-base/minecraft/net/minecraft/entity/passive/EntitySheep.java
 +++ ../src-work/minecraft/net/minecraft/entity/passive/EntitySheep.java
-@@ -24,6 +24,7 @@
+@@ -1,6 +1,8 @@
+ package net.minecraft.entity.passive;
+ 
+ import com.google.common.collect.Maps;
++
++import java.util.Collections;
+ import java.util.Map;
+ import java.util.Random;
+ import javax.annotation.Nullable;
+@@ -24,6 +26,7 @@
  import net.minecraft.init.Items;
  import net.minecraft.init.SoundEvents;
  import net.minecraft.inventory.Container;
@@ -8,7 +17,7 @@
  import net.minecraft.inventory.InventoryCrafting;
  import net.minecraft.item.EnumDyeColor;
  import net.minecraft.item.Item;
-@@ -45,8 +46,10 @@
+@@ -45,8 +48,10 @@
  import net.minecraft.world.storage.loot.LootTableList;
  import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,7 +29,7 @@
  {
      private static final DataParameter<Byte> DYE_COLOR = EntityDataManager.<Byte>createKey(EntitySheep.class, DataSerializers.BYTE);
      private final InventoryCrafting inventoryCrafting = new InventoryCrafting(new Container()
-@@ -55,6 +58,11 @@
+@@ -55,8 +60,13 @@
          {
              return false;
          }
@@ -30,9 +39,12 @@
 +            return null; // TODO: O.O
 +        }
      }, 2, 1);
-     private static final Map<EnumDyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(EnumDyeColor.class);
+-    private static final Map<EnumDyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(EnumDyeColor.class);
++    private static final Map<EnumDyeColor, float[]> DYE_TO_RGB = Collections.synchronizedMap(Maps.newEnumMap(EnumDyeColor.class));
      private int sheepTimer;
-@@ -79,6 +87,7 @@
+     private EntityAIEatGrass entityAIEatGrass;
+ 
+@@ -79,6 +89,7 @@
          this.setSize(0.9F, 1.3F);
          this.inventoryCrafting.setInventorySlotContents(0, new ItemStack(Items.DYE));
          this.inventoryCrafting.setInventorySlotContents(1, new ItemStack(Items.DYE));
@@ -40,7 +52,7 @@
      }
  
      protected void initEntityAI()
-@@ -185,11 +194,12 @@
+@@ -185,11 +196,12 @@
          }
      }
  
@@ -54,7 +66,7 @@
          {
              if (!this.world.isRemote)
              {
-@@ -198,7 +208,9 @@
+@@ -198,7 +210,9 @@
  
                  for (int j = 0; j < i; ++j)
                  {
@@ -64,7 +76,7 @@
                      entityitem.motionY += (double)(this.rand.nextFloat() * 0.05F);
                      entityitem.motionX += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F);
                      entityitem.motionZ += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F);
-@@ -348,6 +360,10 @@
+@@ -348,6 +362,10 @@
  
      public void eatGrassBonus()
      {
@@ -75,7 +87,7 @@
          this.setSheared(false);
  
          if (this.isChild())
-@@ -364,6 +380,21 @@
+@@ -364,6 +382,21 @@
          return livingdata;
      }
  

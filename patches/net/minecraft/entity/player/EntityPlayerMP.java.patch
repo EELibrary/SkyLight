@@ -256,7 +256,8 @@
 -
              while (iterator.hasNext() && j < i)
              {
-                 aint[j++] = ((Integer)iterator.next()).intValue();
+-                aint[j++] = ((Integer)iterator.next()).intValue();
++                aint[j++] = iterator.next();
                  iterator.remove();
              }
 -
