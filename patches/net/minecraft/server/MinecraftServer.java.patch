@@ -830,7 +830,7 @@
 +                worldserver.timings.tickEntities.stopTiming(); // Spigot
                  this.profiler.endSection();
 +
-+                net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostWorldTick(this);
++                net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostWorldTick(worldserver);
 +
                  this.profiler.startSection("tracker");
 +                worldserver.timings.tracker.startTiming(); // Spigot

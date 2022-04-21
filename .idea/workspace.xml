@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="Debug commit 02">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="Debug commit 03" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -328,7 +326,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650543448283</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Debug commit 03">
+      <created>1650544662421</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1650544662421</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -349,6 +354,7 @@
     <MESSAGE value="Revert &quot;A little update&quot;&#10;&#10;This reverts commit 9436075c" />
     <MESSAGE value="Debug commit 01" />
     <MESSAGE value="Debug commit 02" />
-    <option name="LAST_COMMIT_MESSAGE" value="Debug commit 02" />
+    <MESSAGE value="Debug commit 03" />
+    <option name="LAST_COMMIT_MESSAGE" value="Debug commit 03" />
   </component>
 </project>
