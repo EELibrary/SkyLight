@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/network/NetworkManager.java
 +++ ../src-work/minecraft/net/minecraft/network/NetworkManager.java
-@@ -26,16 +26,21 @@
+@@ -26,12 +26,14 @@
  import io.netty.util.AttributeKey;
  import io.netty.util.concurrent.Future;
  import io.netty.util.concurrent.GenericFutureListener;
@@ -8,21 +8,14 @@
  import java.net.InetAddress;
  import java.net.SocketAddress;
  import java.util.Queue;
-+import java.util.concurrent.ConcurrentHashMap;
  import java.util.concurrent.locks.ReentrantReadWriteLock;
  import javax.annotation.Nullable;
  import javax.crypto.SecretKey;
 +
-+import net.minecraft.network.play.server.SPacketChat;
  import net.minecraft.util.CryptManager;
  import net.minecraft.util.ITickable;
  import net.minecraft.util.LazyLoadBase;
- import net.minecraft.util.text.ITextComponent;
-+import net.minecraft.util.text.TextComponentString;
- import net.minecraft.util.text.TextComponentTranslation;
- import net.minecraftforge.fml.relauncher.Side;
- import net.minecraftforge.fml.relauncher.SideOnly;
-@@ -46,201 +51,175 @@
+@@ -46,201 +48,162 @@
  import org.apache.logging.log4j.Marker;
  import org.apache.logging.log4j.MarkerManager;
  
@@ -150,23 +143,11 @@
 -            try
 -            {
 -                ((Packet<INetHandler>)p_channelRead0_2_).processPacket(this.packetListener);
-+    public static ConcurrentHashMap<Channel,Long> channelSendingSpeed = new ConcurrentHashMap<>();
-+    public static int currentPPS = 200;
-+    protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet<?> p_channelRead0_2_) throws Exception {
-+        if (this.channel.isOpen()) {
-+            if(!channelSendingSpeed.contains(p_channelRead0_1_.channel())) {
-+               channelSendingSpeed.put(p_channelRead0_1_.channel(), System.currentTimeMillis());
-+            }else{
-+                long lastTime = channelSendingSpeed.get(p_channelRead0_1_.channel());
-+                long time = System.currentTimeMillis();
-+                channelSendingSpeed.replace(p_channelRead0_1_.channel(), time);
-+                if(time - lastTime > (1000/currentPPS)) {
-+                    p_channelRead0_1_.writeAndFlush(new SPacketChat(new TextComponentString("[Skylight]You are sending "+p_channelRead0_2_.toString()+" too fast!")));;
-+                    return;
-+                }
-             }
+-            }
 -            catch (ThreadQuickExitException var4)
 -            {
++    protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet<?> p_channelRead0_2_) throws Exception {
++        if (this.channel.isOpen()) {
 +            try {
 +                ((Packet<INetHandler>) p_channelRead0_2_).processPacket(this.packetListener);
 +            } catch (ThreadQuickExitException var4) {
@@ -297,7 +278,7 @@
                          channelfuture1.addListeners(futureListeners);
                      }
  
-@@ -250,89 +229,71 @@
+@@ -250,89 +213,71 @@
          }
      }
  
@@ -415,7 +396,7 @@
                      ;
                  }
  
-@@ -343,126 +304,105 @@
+@@ -343,126 +288,105 @@
      }
  
      @SideOnly(Side.CLIENT)
