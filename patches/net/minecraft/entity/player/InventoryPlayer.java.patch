@@ -1,16 +1,13 @@
 --- ../src-base/minecraft/net/minecraft/entity/player/InventoryPlayer.java
 +++ ../src-work/minecraft/net/minecraft/entity/player/InventoryPlayer.java
-@@ -1,8 +1,6 @@
+@@ -1,5 +1,6 @@
  package net.minecraft.entity.player;
  
--import java.util.Arrays;
--import java.util.Iterator;
--import java.util.List;
-+import java.util.*;
- import javax.annotation.Nullable;
- import net.minecraft.block.state.IBlockState;
- import net.minecraft.client.util.RecipeItemHelper;
-@@ -26,6 +24,9 @@
++import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.Iterator;
+ import java.util.List;
+@@ -26,6 +27,9 @@
  import net.minecraft.world.World;
  import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,7 +17,7 @@
  
  public class InventoryPlayer implements IInventory
  {
-@@ -37,7 +38,49 @@
+@@ -37,7 +41,49 @@
      public EntityPlayer player;
      private ItemStack itemStack;
      private int timesChanged;
@@ -29,7 +26,7 @@
 +    private int maxStack = MAX_STACK;
 +    
 +    public List<ItemStack> getContents() {
-+        List<ItemStack> combined = Collections.synchronizedList(new ArrayList<>(mainInventory.size() + armorInventory.size() + offHandInventory.size()));
++        List<ItemStack> combined = new ArrayList<>(mainInventory.size() + armorInventory.size() + offHandInventory.size());
 +        for (List<net.minecraft.item.ItemStack> sub : this.allInventories) {
 +            combined.addAll(sub);
 +        }
@@ -70,7 +67,7 @@
      public InventoryPlayer(EntityPlayer playerIn)
      {
          this.allInventories = Arrays.<NonNullList<ItemStack>>asList(this.mainInventory, this.armorInventory, this.offHandInventory);
-@@ -65,6 +108,23 @@
+@@ -65,6 +111,23 @@
          return stack1.getItem() == stack2.getItem() && (!stack1.getHasSubtypes() || stack1.getMetadata() == stack2.getMetadata()) && ItemStack.areItemStackTagsEqual(stack1, stack2);
      }
  
@@ -94,7 +91,7 @@
      public int getFirstEmptyStack()
      {
          for (int i = 0; i < this.mainInventory.size(); ++i)
-@@ -292,7 +352,8 @@
+@@ -292,7 +355,8 @@
  
          if (itemstack.isEmpty())
          {
@@ -104,7 +101,7 @@
  
              if (p_191973_2_.hasTagCompound())
              {
-@@ -363,6 +424,13 @@
+@@ -363,6 +427,13 @@
                  }
              }
          }
@@ -118,7 +115,7 @@
      }
  
      public boolean addItemStackToInventory(ItemStack itemStackIn)
-@@ -444,6 +512,8 @@
+@@ -444,6 +515,8 @@
                  CrashReportCategory crashreportcategory = crashreport.makeCategory("Item being added");
                  crashreportcategory.addCrashSection("Item ID", Integer.valueOf(Item.getIdFromItem(p_191971_2_.getItem())));
                  crashreportcategory.addCrashSection("Item data", Integer.valueOf(p_191971_2_.getMetadata()));
@@ -127,7 +124,7 @@
                  crashreportcategory.addDetail("Item name", new ICrashReportDetail<String>()
                  {
                      public String call() throws Exception
-@@ -715,7 +785,7 @@
+@@ -715,7 +788,7 @@
  
      public int getInventoryStackLimit()
      {
@@ -136,7 +133,7 @@
      }
  
      public boolean canHarvestBlock(IBlockState state)
-@@ -792,6 +862,9 @@
+@@ -792,6 +865,9 @@
  
      public ItemStack getItemStack()
      {
