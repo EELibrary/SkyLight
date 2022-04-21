@@ -24,10 +24,10 @@
 -    public static final Set<ResourceLocation> KNOWN_TYPES = Sets.<ResourceLocation>newHashSet();
 -    private static final List<String> OLD_NAMES = Lists.<String>newArrayList();
 +    public static final RegistryNamespaced<ResourceLocation, Class<? extends Entity>> REGISTRY = new CatEntityRegistry<ResourceLocation, Class<? extends Entity>>(); // CatServer - compatible with bukkit plugin
-+    public static final Map<ResourceLocation, EntityEggInfo> ENTITY_EGGS = Collections.synchronizedMap(Maps.<ResourceLocation, EntityEggInfo>newLinkedHashMap());
-+    private static final Set<ResourceLocation> EXTRA_NAMES = ConcurrentHashMap.newKeySet();
-+    public static final Set<ResourceLocation> KNOWN_TYPES_Legacy = ConcurrentHashMap.newKeySet(); // CatServer
-+    private static final List<String> OLD_NAMES_Legacy = Collections.synchronizedList(Lists.<String>newArrayList()); // CatServer
++    public static final Map<ResourceLocation, EntityEggInfo> ENTITY_EGGS = Maps.<ResourceLocation, EntityEggInfo>newLinkedHashMap();
++    private static final Set<ResourceLocation> EXTRA_NAMES = Sets.newHashSet();
++    public static final Set<ResourceLocation> KNOWN_TYPES_Legacy = Sets.<ResourceLocation>newHashSet(); // CatServer
++    private static final List<String> OLD_NAMES_Legacy = Lists.<String>newArrayList(); // CatServer
  
      @Nullable
      public static ResourceLocation getKey(Entity entityIn)

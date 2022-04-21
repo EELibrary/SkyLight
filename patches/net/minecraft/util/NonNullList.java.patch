@@ -11,12 +11,3 @@
  import javax.annotation.Nonnull;
  import javax.annotation.Nullable;
  import org.apache.commons.lang3.Validate;
-@@ -38,7 +35,7 @@
- 
-     protected NonNullList(List<E> delegateIn, @Nullable E listType)
-     {
--        this.delegate = delegateIn;
-+        this.delegate = Collections.synchronizedList(delegateIn);
-         this.defaultElement = listType;
-     }
- 
