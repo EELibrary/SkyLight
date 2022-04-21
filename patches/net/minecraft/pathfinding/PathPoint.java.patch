@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/pathfinding/PathPoint.java
 +++ ../src-work/minecraft/net/minecraft/pathfinding/PathPoint.java
-@@ -5,21 +5,23 @@
+@@ -5,6 +5,8 @@
  import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
  
@@ -9,15 +9,14 @@
  public class PathPoint
  {
      public final int x;
-     public final int y;
+@@ -12,14 +14,14 @@
      public final int z;
      private final int hash;
--    public int index = -1;
+     public int index = -1;
 -    public float totalPathDistance;
 -    public float distanceToNext;
 -    public float distanceToTarget;
 -    public PathPoint previous;
-+    public AtomicInteger index = new AtomicInteger(-1);
 +    public volatile float totalPathDistance;
 +    public volatile float distanceToNext;
 +    public volatile float distanceToTarget;
@@ -37,16 +36,7 @@
      {
          PathPoint pathpoint = new PathPoint(x, y, z);
 -        pathpoint.index = this.index;
-+        pathpoint.index.set(this.index.get());
++        pathpoint.index=this.index;
          pathpoint.totalPathDistance = this.totalPathDistance;
          pathpoint.distanceToNext = this.distanceToNext;
          pathpoint.distanceToTarget = this.distanceToTarget;
-@@ -95,7 +97,7 @@
- 
-     public boolean isAssigned()
-     {
--        return this.index >= 0;
-+        return this.index.get() >= 0;
-     }
- 
-     public String toString()

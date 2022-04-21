@@ -187,7 +187,7 @@
              pathpoint.distanceToNext = 0.0F;
              pathpoint.previous = null;
 -            pathpoint.index = -1;
-+            pathpoint.index.set(-1);
++            pathpoint.index=-1;
          }
  
          PathPoint pathpoint4 = this.pathPoints[startIdx];

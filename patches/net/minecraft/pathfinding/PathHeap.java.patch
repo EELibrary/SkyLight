@@ -1,42 +1,22 @@
 --- ../src-base/minecraft/net/minecraft/pathfinding/PathHeap.java
 +++ ../src-work/minecraft/net/minecraft/pathfinding/PathHeap.java
-@@ -1,49 +1,54 @@
- package net.minecraft.pathfinding;
- 
-+import java.util.concurrent.atomic.AtomicInteger;
-+import java.util.concurrent.atomic.AtomicReference;
-+
+@@ -3,7 +3,7 @@
  public class PathHeap
  {
      private PathPoint[] pathPoints = new PathPoint[128];
 -    private int count;
-+    private AtomicInteger count = new AtomicInteger(0);
++    private int  count;
  
      public PathPoint addPoint(PathPoint point)
      {
--        if (point.index >= 0)
-+        if (point.index.get() >= 0)
-         {
-             throw new IllegalStateException("OW KNOWS!");
-         }
-         else
-         {
--            if (this.count == this.pathPoints.length)
-+            if (this.count.get() == this.pathPoints.length)
-             {
--                PathPoint[] apathpoint = new PathPoint[this.count << 1];
--                System.arraycopy(this.pathPoints, 0, apathpoint, 0, this.count);
-+                PathPoint[] apathpoint = new PathPoint[this.count.get() << 1];
-+                System.arraycopy(this.pathPoints, 0, apathpoint, 0, this.count.get());
-                 this.pathPoints = apathpoint;
+@@ -21,21 +21,23 @@
              }
  
--            this.pathPoints[this.count] = point;
+             this.pathPoints[this.count] = point;
 -            point.index = this.count;
 -            this.sortBack(this.count++);
-+            this.pathPoints[this.count.get()] = point;
-+            point.index.set(this.count.get());
-+            int i = this.count.get();
++            point.index=this.count;
++            int i = this.count;
 +            this.sortBack(i++);
              return point;
          }
@@ -45,102 +25,63 @@
      public void clearPath()
      {
 -        this.count = 0;
-+        this.count.set(0);
++        this.count=0;
      }
  
      public PathPoint dequeue()
      {
          PathPoint pathpoint = this.pathPoints[0];
 -        this.pathPoints[0] = this.pathPoints[--this.count];
--        this.pathPoints[this.count] = null;
-+        int b = this.count.get();
++        int b = this.count;
 +        this.pathPoints[0] = this.pathPoints[--b];
-+        this.pathPoints[this.count.get()] = null;
+         this.pathPoints[this.count] = null;
  
--        if (this.count > 0)
-+        if (this.count.get() > 0)
-         {
+         if (this.count > 0)
+@@ -43,7 +45,7 @@
              this.sortForward(0);
          }
  
 -        pathpoint.index = -1;
-+        pathpoint.index.set(-1);
++        pathpoint.index=-1;
          return pathpoint;
      }
  
-@@ -54,11 +59,11 @@
- 
-         if (distance < f)
-         {
--            this.sortBack(point.index);
-+            this.sortBack(point.index.get());
-         }
-         else
-         {
--            this.sortForward(point.index);
-+            this.sortForward(point.index.get());
-         }
-     }
- 
-@@ -78,11 +83,11 @@
+@@ -78,11 +80,11 @@
              }
  
              this.pathPoints[index] = pathpoint1;
 -            pathpoint1.index = index;
-+            pathpoint1.index.set(index);
++            pathpoint1.index=index;
          }
  
          this.pathPoints[index] = pathpoint;
 -        pathpoint.index = index;
-+        pathpoint.index.set(index);
++        pathpoint.index=index;
      }
  
      private void sortForward(int index)
-@@ -95,7 +100,7 @@
-             int i = 1 + (index << 1);
-             int j = i + 1;
- 
--            if (i >= this.count)
-+            if (i >= this.count.get())
-             {
-                 break;
-             }
-@@ -105,7 +110,7 @@
-             PathPoint pathpoint2;
-             float f2;
- 
--            if (j >= this.count)
-+            if (j >= this.count.get())
-             {
-                 pathpoint2 = null;
-                 f2 = Float.POSITIVE_INFINITY;
-@@ -124,7 +129,7 @@
+@@ -124,7 +126,7 @@
                  }
  
                  this.pathPoints[index] = pathpoint1;
 -                pathpoint1.index = index;
-+                pathpoint1.index.set(index);
++                pathpoint1.index=index;
                  index = i;
              }
              else
-@@ -135,17 +140,17 @@
+@@ -135,13 +137,13 @@
                  }
  
                  this.pathPoints[index] = pathpoint2;
 -                pathpoint2.index = index;
-+                pathpoint2.index.set(index);
++                pathpoint2.index=index;
                  index = j;
              }
          }
  
          this.pathPoints[index] = pathpoint;
 -        pathpoint.index = index;
-+        pathpoint.index.set(index);
++        pathpoint.index=index;
      }
  
      public boolean isPathEmpty()
-     {
--        return this.count == 0;
-+        return this.count.get() == 0;
-     }
- }
