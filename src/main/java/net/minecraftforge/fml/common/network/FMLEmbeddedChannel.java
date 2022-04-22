@@ -19,7 +19,6 @@
 
 package net.minecraftforge.fml.common.network;
 
-import catserver.server.AsyncCatcher;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
 
@@ -56,7 +55,8 @@ public class FMLEmbeddedChannel extends EmbeddedChannel {
         this.pipeline().addFirst("fml:outbound",new FMLOutboundHandler());
     }
 
-    private final Object mutex = this;
+
+    private final Object mutex = new Object();
     /**
      * Utility method to generate a regular packet from a custom packet. Basically, it writes the packet through the
      * outbound side which should have a message to message codec present (such as {@link FMLIndexedMessageToMessageCodec},
@@ -69,19 +69,15 @@ public class FMLEmbeddedChannel extends EmbeddedChannel {
      */
     public Packet<?> generatePacketFrom(Object object)
     {
-        OutboundTarget outboundTarget = attr(FMLOutboundHandler.FML_MESSAGETARGET).getAndSet(OutboundTarget.NOWHERE);
         Packet<?> pkt = null;
-        if((object!=null)&&(outboundTarget!=null)){
+        synchronized (mutex) {
             try {
-                synchronized (mutex) {
-                    writeOutbound(object);
-                    attr(FMLOutboundHandler.FML_MESSAGETARGET).set(outboundTarget);
-                }
+                OutboundTarget outboundTarget = attr(FMLOutboundHandler.FML_MESSAGETARGET).getAndSet(OutboundTarget.NOWHERE);
+                writeOutbound(object);
                 pkt = (Packet<?>) outboundMessages().poll();
-            } catch (Exception e) {
-                if(!(e instanceof NullPointerException)){
-                    e.printStackTrace();
-                }
+                attr(FMLOutboundHandler.FML_MESSAGETARGET).set(outboundTarget);
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
         return pkt;

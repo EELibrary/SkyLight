@@ -1,29 +1,17 @@
 --- ../src-base/minecraft/net/minecraft/entity/ai/EntityAITasks.java
 +++ ../src-work/minecraft/net/minecraft/entity/ai/EntityAITasks.java
-@@ -1,8 +1,11 @@
- package net.minecraft.entity.ai;
- 
- import com.google.common.collect.Sets;
-+
-+import java.util.Collections;
- import java.util.Iterator;
- import java.util.Set;
-+import java.util.concurrent.ConcurrentHashMap;
- import javax.annotation.Nullable;
- import net.minecraft.profiler.Profiler;
- import org.apache.logging.log4j.LogManager;
-@@ -11,8 +14,8 @@
+@@ -11,8 +11,8 @@
  public class EntityAITasks
  {
      private static final Logger LOGGER = LogManager.getLogger();
 -    public final Set<EntityAITasks.EntityAITaskEntry> taskEntries = Sets.<EntityAITasks.EntityAITaskEntry>newLinkedHashSet();
 -    private final Set<EntityAITasks.EntityAITaskEntry> executingTaskEntries = Sets.<EntityAITasks.EntityAITaskEntry>newLinkedHashSet();
-+    public final Set<EntityAITaskEntry> taskEntries = ConcurrentHashMap.newKeySet();
-+    private final Set<EntityAITaskEntry> executingTaskEntries = ConcurrentHashMap.newKeySet();
++    public final Set<EntityAITaskEntry> taskEntries = Sets.<EntityAITaskEntry>newLinkedHashSet();
++    private final Set<EntityAITaskEntry> executingTaskEntries = Sets.<EntityAITaskEntry>newLinkedHashSet();
      private final Profiler profiler;
      private int tickCount;
      private int tickRate = 3;
-@@ -25,16 +28,16 @@
+@@ -25,16 +25,16 @@
  
      public void addTask(int priority, EntityAIBase task)
      {
@@ -43,7 +31,7 @@
              EntityAIBase entityaibase = entityaitasks$entityaitaskentry.action;
  
              if (entityaibase == task)
-@@ -58,7 +61,7 @@
+@@ -58,7 +58,7 @@
  
          if (this.tickCount++ % this.tickRate == 0)
          {
@@ -52,7 +40,7 @@
              {
                  if (entityaitasks$entityaitaskentry.using)
                  {
-@@ -79,11 +82,11 @@
+@@ -79,11 +79,11 @@
          }
          else
          {
@@ -66,7 +54,7 @@
  
                  if (!this.canContinue(entityaitasks$entityaitaskentry1))
                  {
-@@ -100,7 +103,7 @@
+@@ -100,7 +100,7 @@
          {
              this.profiler.startSection("goalTick");
  
@@ -75,7 +63,7 @@
              {
                  entityaitasks$entityaitaskentry2.action.updateTask();
              }
-@@ -109,12 +112,12 @@
+@@ -109,12 +109,12 @@
          }
      }
  
@@ -90,7 +78,7 @@
      {
          if (this.executingTaskEntries.isEmpty())
          {
-@@ -126,7 +129,7 @@
+@@ -126,7 +126,7 @@
          }
          else
          {
@@ -99,7 +87,7 @@
              {
                  if (entityaitasks$entityaitaskentry != taskEntry)
                  {
-@@ -148,7 +151,7 @@
+@@ -148,7 +148,7 @@
          }
      }
  
@@ -108,7 +96,7 @@
      {
          return (taskEntry1.action.getMutexBits() & taskEntry2.action.getMutexBits()) == 0;
      }
-@@ -200,7 +203,7 @@
+@@ -200,7 +200,7 @@
              }
              else
              {

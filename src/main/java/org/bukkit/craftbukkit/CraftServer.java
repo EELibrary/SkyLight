@@ -397,6 +397,8 @@ public final class CraftServer implements Server {
             CraftDefaultPermissions.registerCorePermissions();
             helpMap.initializeCommands();
         }
+
+        catserver.server.SparkLoader.tryLoadSparkPlugin(pluginManager); // CatServer
     }
 
     public void disablePlugins() {
@@ -703,6 +705,7 @@ public final class CraftServer implements Server {
 
     @Override
     public boolean dispatchCommand(CommandSender sender, String commandLine) {
+        if (catserver.server.AsyncCatcher.checkAsync("dispatch command")) return catserver.server.AsyncCatcher.ensureExecuteOnPrimaryThread(() -> dispatchCommand(sender, commandLine)); // CatServer
         Validate.notNull(sender, "Sender cannot be null");
         Validate.notNull(commandLine, "CommandLine cannot be null");
 

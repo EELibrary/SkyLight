@@ -1,92 +1,26 @@
 --- ../src-base/minecraft/net/minecraft/world/gen/ChunkProviderServer.java
 +++ ../src-work/minecraft/net/minecraft/world/gen/ChunkProviderServer.java
-@@ -6,10 +6,8 @@
- import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
- import it.unimi.dsi.fastutil.objects.ObjectIterator;
- import java.io.IOException;
--import java.util.Collection;
--import java.util.Iterator;
--import java.util.List;
--import java.util.Set;
-+import java.util.*;
-+import java.util.concurrent.ConcurrentHashMap;
- import javax.annotation.Nullable;
- import net.minecraft.crash.CrashReport;
- import net.minecraft.crash.CrashReportCategory;
-@@ -26,16 +24,49 @@
+@@ -26,15 +26,18 @@
  import net.minecraft.world.chunk.storage.IChunkLoader;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
 +import org.bukkit.event.world.ChunkUnloadEvent;
-+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-+import it.unimi.dsi.fastutil.ints.IntCollection;
-+import it.unimi.dsi.fastutil.ints.IntIterator;
-+import it.unimi.dsi.fastutil.ints.IntSet;
-+import it.unimi.dsi.fastutil.objects.ObjectCollection;
-+import it.unimi.dsi.fastutil.objects.ObjectSet;
-+import org.apache.commons.lang3.NotImplementedException;
  
-+import java.util.Collection;
-+import java.util.Iterator;
-+import java.util.Map;
-+import java.util.Set;
-+import java.util.concurrent.ConcurrentHashMap;
-+import java.util.concurrent.atomic.AtomicBoolean;
-+
 +// TODO: This class needs serious testing.
  public class ChunkProviderServer implements IChunkProvider
  {
      private static final Logger LOGGER = LogManager.getLogger();
 -    private final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
-+    public final Set<Long> droppedChunksSet = ConcurrentHashMap.newKeySet();
++    public final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
      public final IChunkGenerator chunkGenerator;
      public final IChunkLoader chunkLoader;
--    public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<Chunk>(8192);
-+    private AtomicBoolean isIDCiterating = new AtomicBoolean(false);
-+    public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap();
+     public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<Chunk>(8192);
      public final WorldServer world;
--
-+    private final Set<Long> loadingChunks = ConcurrentHashMap.newKeySet();
-+    private ConcurrentHashMap<Long,Chunk> addqueue = new ConcurrentHashMap();
-+    private ConcurrentHashMap<Long,Chunk> removequeue = new ConcurrentHashMap();
-+    private void put(long k,Chunk c){
-+        if (isIDCiterating.get()){
-+            addqueue.put(k,c);
-+            return;
-+        }
-+        id2ChunkMap.put(k,c);
-+    }
-+    private void remove(Chunk c){
-+        if (isIDCiterating.get()){
-+            removequeue.put(c.chunkKey,c);
-+            return;
-+        }
-+        id2ChunkMap.remove(c.chunkKey);
-+    }
++    private final Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
+ 
      public ChunkProviderServer(WorldServer worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn)
      {
-         this.world = worldObjIn;
-@@ -59,13 +90,18 @@
- 
-     public void queueUnloadAll()
-     {
-+        id2ChunkMap.putAll(addqueue);
-+        addqueue.clear();
-+        removequeue.forEach((l,c)-> id2ChunkMap.remove(l));
-+        removequeue.clear();
-         ObjectIterator objectiterator = this.id2ChunkMap.values().iterator();
--
-+        isIDCiterating.set(true);
-         while (objectiterator.hasNext())
-         {
-             Chunk chunk = (Chunk)objectiterator.next();
-             this.queueUnload(chunk);
-         }
-+        isIDCiterating.set(false);
-     }
- 
-     @Nullable
-@@ -82,23 +118,56 @@
+@@ -82,23 +85,56 @@
          return chunk;
      }
  
@@ -116,13 +50,12 @@
 +            chunk = net.minecraftforge.common.ForgeChunkManager.fetchDormantChunk(pos, this.world);
 +            if (chunk != null || !(this.chunkLoader instanceof net.minecraft.world.chunk.storage.AnvilChunkLoader))
              {
--                this.id2ChunkMap.put(ChunkPos.asLong(x, z), chunk);
 +                if (!loadingChunks.add(pos)) net.minecraftforge.fml.common.FMLLog.bigWarning("There is an attempt to load a chunk ({},{}) in dimension {} that is already being loaded. This will cause weird chunk breakages.", x, z, this.world.provider.getDimension());
 +                if (chunk == null) chunk = this.loadChunkFromFile(x, z);
 +
 +                if (chunk != null)
 +                {
-+                this.put(ChunkPos.asLong(x, z), chunk);
+                 this.id2ChunkMap.put(ChunkPos.asLong(x, z), chunk);
                  chunk.onLoad();
 -                chunk.populate(this, this.chunkGenerator);
 +                chunk.populateCB(this, this.chunkGenerator, false);
@@ -149,7 +82,7 @@
          return chunk;
      }
  
-@@ -108,6 +177,7 @@
+@@ -108,6 +144,7 @@
  
          if (chunk == null)
          {
@@ -157,12 +90,9 @@
              long i = ChunkPos.asLong(x, z);
  
              try
-@@ -124,9 +194,10 @@
-                 throw new ReportedException(crashreport);
-             }
+@@ -126,7 +163,8 @@
  
--            this.id2ChunkMap.put(i, chunk);
-+            this.put(i, chunk);
+             this.id2ChunkMap.put(i, chunk);
              chunk.onLoad();
 -            chunk.populate(this, this.chunkGenerator);
 +            chunk.populateCB(this, this.chunkGenerator, true);
@@ -170,7 +100,7 @@
          }
  
          return chunk;
-@@ -218,36 +289,91 @@
+@@ -218,36 +256,91 @@
          this.chunkLoader.flush();
      }
  
@@ -261,7 +191,7 @@
 +            this.saveChunkData(chunk);
 +            this.saveChunkExtraData(chunk);
 +        }
-+        this.remove(chunk);
++        this.id2ChunkMap.remove(chunk.chunkKey);
 +        return true;
 +    }
 +

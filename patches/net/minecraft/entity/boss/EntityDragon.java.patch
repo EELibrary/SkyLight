@@ -171,75 +171,12 @@
              }
          }
  
-@@ -702,7 +774,9 @@
-                 }
- 
-                 int j1 = Math.max(this.world.getSeaLevel() + 10, this.world.getTopSolidOrLiquidBlock(new BlockPos(l, 0, i1)).getY() + j);
--                this.pathPoints[i] = new PathPoint(l, j1, i1);
-+                synchronized(this) {
-+                    this.pathPoints[i] = new PathPoint(l, j1, i1);
-+                }
-             }
- 
-             this.neighbors[0] = 6146;
-@@ -774,7 +848,7 @@
+@@ -774,7 +846,7 @@
              pathpoint.totalPathDistance = 0.0F;
              pathpoint.distanceToNext = 0.0F;
              pathpoint.previous = null;
 -            pathpoint.index = -1;
-+            pathpoint.index=-1;
++            pathpoint.index.set(-1);
          }
  
          PathPoint pathpoint4 = this.pathPoints[startIdx];
-@@ -824,31 +898,33 @@
-                 }
-             }
- 
--            for (int i1 = j; i1 < 24; ++i1)
--            {
--                if ((this.neighbors[k] & 1 << i1) > 0)
-+            synchronized(this){
-+                for (int i1 = j; i1 < 24; ++i1)
-                 {
--                    PathPoint pathpoint3 = this.pathPoints[i1];
--
--                    if (!pathpoint3.visited)
-+                    if ((this.neighbors[k] & 1 << i1) > 0)
-                     {
--                        float f = pathpoint2.totalPathDistance + pathpoint2.distanceTo(pathpoint3);
-+                        PathPoint pathpoint3 = this.pathPoints[i1];
- 
--                        if (!pathpoint3.isAssigned() || f < pathpoint3.totalPathDistance)
-+                        if (!pathpoint3.visited)
-                         {
--                            pathpoint3.previous = pathpoint2;
--                            pathpoint3.totalPathDistance = f;
--                            pathpoint3.distanceToNext = pathpoint3.distanceTo(pathpoint5);
-+                            float f = pathpoint2.totalPathDistance + pathpoint2.distanceTo(pathpoint3);
- 
--                            if (pathpoint3.isAssigned())
-+                            if (!pathpoint3.isAssigned() || f < pathpoint3.totalPathDistance)
-                             {
--                                this.pathFindQueue.changeDistance(pathpoint3, pathpoint3.totalPathDistance + pathpoint3.distanceToNext);
-+                                pathpoint3.previous = pathpoint2;
-+                                pathpoint3.totalPathDistance = f;
-+                                pathpoint3.distanceToNext = pathpoint3.distanceTo(pathpoint5);
-+
-+                                if (pathpoint3.isAssigned())
-+                                {
-+                                    this.pathFindQueue.changeDistance(pathpoint3, pathpoint3.totalPathDistance + pathpoint3.distanceToNext);
-+                                }
-+                                else
-+                                {
-+                                    pathpoint3.distanceToTarget = pathpoint3.totalPathDistance + pathpoint3.distanceToNext;
-+                                    this.pathFindQueue.addPoint(pathpoint3);
-+                                }
-                             }
--                            else
--                            {
--                                pathpoint3.distanceToTarget = pathpoint3.totalPathDistance + pathpoint3.distanceToNext;
--                                this.pathFindQueue.addPoint(pathpoint3);
--                            }
-                         }
-                     }
-                 }

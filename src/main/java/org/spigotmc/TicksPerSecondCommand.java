@@ -29,12 +29,14 @@ public class TicksPerSecondCommand extends Command
         // Paper start - Further improve tick handling
         double[] tps = org.bukkit.Bukkit.getTPS();
         String[] tpsAvg = new String[tps.length];
+
         for ( int i = 0; i < tps.length; i++) {
             tpsAvg[i] = format( tps[i] );
         }
+
         sender.sendMessage( ChatColor.GOLD + "TPS from last 1m, 5m, 15m: " + org.apache.commons.lang.StringUtils.join(tpsAvg, ", "));
         // Paper end
-        sender.sendMessage(ChatColor.GOLD + "Current Memory Usage: " + ChatColor.GREEN + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576L + "/" + Runtime.getRuntime().totalMemory() / 1048576L + " mb (Max: " + Runtime.getRuntime().maxMemory() / 1048576L + " mb)");
+
         return true;
     }
 

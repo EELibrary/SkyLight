@@ -1,27 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/client/multiplayer/WorldClient.java
 +++ ../src-work/minecraft/net/minecraft/client/multiplayer/WorldClient.java
-@@ -1,8 +1,11 @@
- package net.minecraft.client.multiplayer;
- 
- import com.google.common.collect.Sets;
-+
-+import java.util.Collections;
- import java.util.Random;
- import java.util.Set;
-+import java.util.concurrent.CopyOnWriteArrayList;
- import javax.annotation.Nullable;
- import net.minecraft.block.material.Material;
- import net.minecraft.block.state.IBlockState;
-@@ -51,7 +54,7 @@
- {
-     private final NetHandlerPlayClient connection;
-     private ChunkProviderClient clientChunkProvider;
--    private final Set<Entity> entityList = Sets.<Entity>newHashSet();
-+    private final Set<Entity> entityList = Collections.synchronizedSet(Sets.<Entity>newHashSet());
-     private final Set<Entity> entitySpawnQueue = Sets.<Entity>newHashSet();
-     private final Minecraft mc = Minecraft.getMinecraft();
-     private final Set<ChunkPos> previousActiveChunkSet = Sets.<ChunkPos>newHashSet();
-@@ -60,17 +63,19 @@
+@@ -60,17 +60,19 @@
  
      public WorldClient(NetHandlerPlayClient netHandler, WorldSettings settings, int dimension, EnumDifficulty difficulty, Profiler profilerIn)
      {
@@ -43,7 +22,7 @@
      }
  
      public void tick()
-@@ -113,7 +118,7 @@
+@@ -113,7 +115,7 @@
          return this.clientChunkProvider;
      }
  
@@ -52,32 +31,3 @@
      {
          return allowEmpty || !this.getChunkProvider().provideChunk(x, z).isEmpty();
      }
-@@ -245,20 +250,16 @@
-     public void addEntityToWorld(int entityID, Entity entityToSpawn)
-     {
-         Entity entity = this.getEntityByID(entityID);
--
-         if (entity != null)
-         {
-             this.removeEntity(entity);
-         }
--
-         this.entityList.add(entityToSpawn);
-         entityToSpawn.setEntityId(entityID);
--
-         if (!this.spawnEntity(entityToSpawn))
-         {
-             this.entitySpawnQueue.add(entityToSpawn);
-         }
--
-         this.entitiesById.addKey(entityID, entityToSpawn);
-     }
- 
-@@ -271,7 +272,6 @@
-     public Entity removeEntityFromWorld(int entityID)
-     {
-         Entity entity = this.entitiesById.removeObject(entityID);
--
-         if (entity != null)
-         {
-             this.entityList.remove(entity);

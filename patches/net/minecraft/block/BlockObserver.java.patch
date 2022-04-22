@@ -1,24 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/block/BlockObserver.java
 +++ ../src-work/minecraft/net/minecraft/block/BlockObserver.java
-@@ -6,7 +6,9 @@
- import net.minecraft.block.properties.PropertyBool;
- import net.minecraft.block.state.BlockStateContainer;
- import net.minecraft.block.state.IBlockState;
-+import net.minecraft.command.CommandKill;
- import net.minecraft.creativetab.CreativeTabs;
-+import net.minecraft.entity.Entity;
- import net.minecraft.entity.EntityLivingBase;
- import net.minecraft.util.EnumFacing;
- import net.minecraft.util.Mirror;
-@@ -35,7 +37,6 @@
-     {
-         return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
-     }
--
-     public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
-     {
-         return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING)));
-@@ -145,4 +146,12 @@
+@@ -145,4 +145,12 @@
      {
          return this.getDefaultState().withProperty(FACING, EnumFacing.getFront(meta & 7));
      }

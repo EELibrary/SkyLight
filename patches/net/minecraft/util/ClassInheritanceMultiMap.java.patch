@@ -1,16 +1,27 @@
 --- ../src-base/minecraft/net/minecraft/util/ClassInheritanceMultiMap.java
 +++ ../src-work/minecraft/net/minecraft/util/ClassInheritanceMultiMap.java
-@@ -13,7 +13,8 @@
+@@ -10,14 +10,16 @@
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Set;
++import java.util.concurrent.ConcurrentHashMap;
  
  public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
  {
 -    private static final Set < Class<? >> ALL_KNOWN = Sets. < Class<? >> newHashSet();
+-    private final Map < Class<?>, List<T >> map = Maps. < Class<?>, List<T >> newHashMap();
+-    private final Set < Class<? >> knownKeys = Sets. < Class<? >> newIdentityHashSet();
 +    // Forge: Use concurrent collection to allow creating chunks from multiple threads safely
 +    private static final Set < Class<? >> ALL_KNOWN = Collections.newSetFromMap(new java.util.concurrent.ConcurrentHashMap<Class<?>, Boolean>());
-     private final Map < Class<?>, List<T >> map = Maps. < Class<?>, List<T >> newHashMap();
-     private final Set < Class<? >> knownKeys = Sets. < Class<? >> newIdentityHashSet();
++    private final Map < Class<?>, List<T >> map =new ConcurrentHashMap<>();
++    private final Set < Class<? >> knownKeys = Collections.synchronizedSet(Sets. < Class<? >> newIdentityHashSet());
      private final Class<T> baseClass;
-@@ -122,6 +123,17 @@
+-    private final List<T> values = Lists.<T>newArrayList();
++    private final List<T> values = Collections.synchronizedList(Lists.<T>newArrayList());
+ 
+     public ClassInheritanceMultiMap(Class<T> baseClassIn)
+     {
+@@ -122,6 +124,17 @@
          {
              public Iterator<S> iterator()
              {
@@ -28,7 +39,7 @@
                  List<T> list = (List)ClassInheritanceMultiMap.this.map.get(ClassInheritanceMultiMap.this.initializeClassLookup(clazz));
  
                  if (list == null)
-@@ -133,6 +145,7 @@
+@@ -133,6 +146,7 @@
                      Iterator<T> iterator = list.iterator();
                      return Iterators.filter(iterator, clazz);
                  }

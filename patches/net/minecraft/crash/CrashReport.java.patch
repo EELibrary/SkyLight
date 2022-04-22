@@ -8,20 +8,7 @@
  import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
  import org.apache.commons.io.IOUtils;
-@@ -42,6 +43,12 @@
- 
-     private void populateEnvironment()
-     {
-+        this.systemDetailsCategory.addDetail("BBBBBBBBBBBB", new ICrashReportDetail<String>() {
-+            @Override
-+            public String call(){
-+                return "Nope";
-+            }
-+        });
-         this.systemDetailsCategory.addDetail("Minecraft Version", new ICrashReportDetail<String>()
-         {
-             public String call()
-@@ -116,6 +123,8 @@
+@@ -116,6 +117,8 @@
                  return IntCache.getCacheSizes();
              }
          });
@@ -30,7 +17,7 @@
      }
  
      public String getDescription()
-@@ -205,6 +214,7 @@
+@@ -205,6 +208,7 @@
      {
          StringBuilder stringbuilder = new StringBuilder();
          stringbuilder.append("---- Minecraft Crash Report ----\n");

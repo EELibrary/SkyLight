@@ -28,7 +28,6 @@ import org.bukkit.command.Command;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.novau2333.ssapi.commands.ServerStatusCommand;
 
 public class SpigotConfig
 {
@@ -262,7 +261,6 @@ public class SpigotConfig
 
     private static void tpsCommand()
     {
-        commands.put( "skstatus", new ServerStatusCommand());
         commands.put( "tps", new TicksPerSecondCommand( "tps" ) );
     }
 

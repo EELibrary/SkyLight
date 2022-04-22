@@ -1,14 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/pathfinding/PathNavigate.java
 +++ ../src-work/minecraft/net/minecraft/pathfinding/PathNavigate.java
-@@ -8,6 +8,7 @@
- import net.minecraft.entity.SharedMonsterAttributes;
- import net.minecraft.entity.ai.attributes.IAttributeInstance;
- import net.minecraft.init.Blocks;
-+import net.minecraft.server.MinecraftServer;
- import net.minecraft.util.math.AxisAlignedBB;
- import net.minecraft.util.math.BlockPos;
- import net.minecraft.util.math.MathHelper;
-@@ -22,11 +23,11 @@
+@@ -22,11 +22,11 @@
      @Nullable
      protected Path currentPath;
      protected double speed;
@@ -18,86 +10,8 @@
      private int ticksAtLastPos;
 -    private Vec3d lastPosCheck = Vec3d.ZERO;
 -    private Vec3d timeoutCachedNode = Vec3d.ZERO;
-+    public Vec3d lastPosCheck = Vec3d.ZERO; // CatServer - private -> public
-+    public Vec3d timeoutCachedNode = Vec3d.ZERO; // CatServer - private -> public
++    public Vec3d lastPosCheck = Vec3d.ZERO;
++    public Vec3d timeoutCachedNode = Vec3d.ZERO;
      private long timeoutTimer;
      private long lastTimeoutCheck;
      private double timeoutLimit;
-@@ -148,9 +149,27 @@
- 
-     public boolean tryMoveToEntityLiving(Entity entityIn, double speedIn)
-     {
-+        // Paper start - Pathfinding optimizations
-+        if (this.pathfindFailures > 10 && this.currentPath == null && MinecraftServer.currentTick < this.lastFailure + 40) {
-+            return false;
-+        }
-+
-         Path path = this.getPathToEntityLiving(entityIn);
--        return path != null && this.setPath(path, speedIn);
-+
-+        if (path != null && this.setPath(path, speedIn)) {
-+            this.lastFailure = 0;
-+            this.pathfindFailures = 0;
-+            return true;
-+        } else {
-+            this.pathfindFailures++;
-+            this.lastFailure = MinecraftServer.currentTick;
-+            return false;
-+        }
-+
-     }
-+    private int lastFailure = 0;
-+    private int pathfindFailures = 0;
-+    // Paper end
- 
-     public boolean setPath(@Nullable Path pathentityIn, double speedIn)
-     {
-@@ -239,10 +258,12 @@
- 
-         for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
-         {
--            if ((double)this.currentPath.getPathPointFromIndex(j).y != Math.floor(vec3d.y))
--            {
--                i = j;
--                break;
-+            if (currentPath!=null){
-+                if ((double)this.currentPath.getPathPointFromIndex(j).y != Math.floor(vec3d.y))
-+                {
-+                    i = j;
-+                    break;
-+                }
-             }
-         }
- 
-@@ -258,15 +279,21 @@
-         int l = MathHelper.ceil(this.entity.height);
-         int i1 = k;
- 
-+        if(this.currentPath==null){
-+            return;
-+        }
-         for (int j1 = i - 1; j1 >= this.currentPath.getCurrentPathIndex(); --j1)
-         {
-             if (this.isDirectPathBetweenPoints(vec3d, this.currentPath.getVectorFromIndex(this.entity, j1), k, l, i1))
-             {
--                this.currentPath.setCurrentPathIndex(j1);
-+                if(currentPath!=null){
-+                    this.currentPath.setCurrentPathIndex(j1);
-+                }else{
-+                    continue;
-+                }
-                 break;
-             }
-         }
--
-         this.checkForStuck(vec3d);
-     }
- 
-@@ -317,6 +344,7 @@
- 
-     public void clearPath()
-     {
-+        this.pathfindFailures = 0; this.lastFailure = 0; // Paper - Pathfinding optimizations
-         this.currentPath = null;
-     }
- 

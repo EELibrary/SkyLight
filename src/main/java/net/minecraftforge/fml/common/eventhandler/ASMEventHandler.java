@@ -25,9 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
-import java.util.concurrent.*;
 
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.ModContainer;
 
 import org.apache.logging.log4j.ThreadContext;
@@ -36,6 +34,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import com.google.common.collect.Maps;
+
 public class ASMEventHandler implements IEventListener
 {
     private static int IDs = 0;
@@ -75,24 +74,24 @@ public class ASMEventHandler implements IEventListener
             }
         }
     }
+    private final Object mutex = new Object();
+
     @SuppressWarnings("rawtypes")
     @Override
-    public void invoke(Event event) {
-        synchronized (handler){
-            try {
-                if (GETCONTEXT)
-                    ThreadContext.put("mod", owner == null ? "" : owner.getName());
-                if (handler != null) {
-                    if (!event.isCancelable() || !event.isCanceled() || subInfo.receiveCanceled()) {
-                        if (filter == null || filter == ((IGenericEvent) event).getGenericType()) {
-                            handler.invoke(event);
-                        }
+    public void invoke(Event event)
+    {
+        synchronized (mutex) {
+            if (GETCONTEXT)
+                ThreadContext.put("mod", owner == null ? "" : owner.getName());
+            if (handler != null) {
+                if (!event.isCancelable() || !event.isCanceled() || subInfo.receiveCanceled()) {
+                    if (filter == null || filter == ((IGenericEvent) event).getGenericType()) {
+                        handler.invoke(event);
                     }
                 }
-                if (GETCONTEXT) ThreadContext.remove("mod");
-            } catch (Throwable t) {
-                FMLLog.getLogger().error("Error invoking event handler {}", readable, t);
             }
+            if (GETCONTEXT)
+                ThreadContext.remove("mod");
         }
     }
 

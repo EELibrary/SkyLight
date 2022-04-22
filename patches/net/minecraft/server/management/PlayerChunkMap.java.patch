@@ -1,7 +1,10 @@
 --- ../src-base/minecraft/net/minecraft/server/management/PlayerChunkMap.java
 +++ ../src-work/minecraft/net/minecraft/server/management/PlayerChunkMap.java
-@@ -7,12 +7,14 @@
- import com.google.common.collect.Sets;
+@@ -4,15 +4,17 @@
+ import com.google.common.collect.AbstractIterator;
+ import com.google.common.collect.ComparisonChain;
+ import com.google.common.collect.Lists;
+-import com.google.common.collect.Sets;
  import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
  import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 -import java.util.Collections;
@@ -12,6 +15,7 @@
 +
 +import java.util.*;
 +import java.util.concurrent.ConcurrentHashMap;
++import java.util.concurrent.ConcurrentLinkedQueue;
 +import java.util.concurrent.CopyOnWriteArrayList;
 +import java.util.concurrent.atomic.AtomicBoolean;
  import javax.annotation.Nullable;
@@ -25,7 +29,7 @@
      };
      private final WorldServer world;
 -    private final List<EntityPlayerMP> players = Lists.<EntityPlayerMP>newArrayList();
-+    private final List<EntityPlayerMP> players = Collections.synchronizedList(Lists.<EntityPlayerMP>newArrayList());
++    private final List<EntityPlayerMP> players = Collections.synchronizedList(Lists.newArrayList());
      private final Long2ObjectMap<PlayerChunkMapEntry> entryMap = new Long2ObjectOpenHashMap<PlayerChunkMapEntry>(4096);
 -    private final Set<PlayerChunkMapEntry> dirtyEntries = Sets.<PlayerChunkMapEntry>newHashSet();
 -    private final List<PlayerChunkMapEntry> pendingSendToPlayers = Lists.<PlayerChunkMapEntry>newLinkedList();
@@ -33,12 +37,12 @@
 -    private final List<PlayerChunkMapEntry> entries = Lists.<PlayerChunkMapEntry>newArrayList();
 +    private final Set<PlayerChunkMapEntry> dirtyEntries = ConcurrentHashMap.newKeySet();
 +    private final List<PlayerChunkMapEntry> pendingSendToPlayers = Collections.synchronizedList(Lists.<PlayerChunkMapEntry>newLinkedList());
-+    private final List<PlayerChunkMapEntry> entriesWithoutChunks = Collections.synchronizedList(Lists.<PlayerChunkMapEntry>newLinkedList());
-+    private final List<PlayerChunkMapEntry> entries = Collections.synchronizedList(Lists.<PlayerChunkMapEntry>newArrayList());
++    private final List<PlayerChunkMapEntry> entriesWithoutChunks = new CopyOnWriteArrayList<>();
++    private final List<PlayerChunkMapEntry> entries = Collections.synchronizedList(Lists.newArrayList());
      private int playerViewRadius;
      private long previousTotalWorldTime;
      private boolean sortMissingChunks = true;
-@@ -52,7 +54,7 @@
+@@ -52,16 +54,25 @@
      public PlayerChunkMap(WorldServer serverWorld)
      {
          this.world = serverWorld;
@@ -47,80 +51,61 @@
      }
  
      public WorldServer getWorldServer()
-@@ -62,6 +64,11 @@
- 
+     {
+         return this.world;
+     }
+-
++    private final Queue<Runnable> entriesEditQueue = new ConcurrentLinkedQueue<>();
++    private final AtomicBoolean entriesIteraing = new AtomicBoolean(false);
      public Iterator<Chunk> getChunkIterator()
      {
-+        iterating.set(true);
-+        entries.addAll(addqeue);
-+        addqeue.clear();
-+        entries.removeAll(removeqeue);
-+        removeqeue.clear();
++        for(Runnable task : entriesEditQueue){
++            try{
++                task.run();
++            }finally{
++                entriesEditQueue.remove(task);
++            }
++        }
++        entriesIteraing.set(true);
          final Iterator<PlayerChunkMapEntry> iterator = this.entries.iterator();
          return new AbstractIterator<Chunk>()
          {
-@@ -95,6 +102,8 @@
-                         }
+@@ -96,7 +107,7 @@
  
                          return chunk;
-+                    }else{
-+                        iterating.set(false);
                      }
- 
-                     return (Chunk)this.endOfData();
-@@ -102,18 +111,24 @@
-             }
-         };
-     }
 -
-+    private AtomicBoolean iterating1 = new AtomicBoolean(false);
-+    private CopyOnWriteArrayList aq1 = new CopyOnWriteArrayList();
-+    private CopyOnWriteArrayList aq2 = new CopyOnWriteArrayList();
-     public void tick()
-     {
-+        if(!iterating1.get()){
-+            this.pendingSendToPlayers.addAll(aq1);
-+            this.pendingSendToPlayers.removeAll(aq2);
-+            this.aq1.clear();
-+            this.aq2.clear();
-+        }
-         long i = this.world.getTotalWorldTime();
- 
-         if (i - this.previousTotalWorldTime > 8000L)
-         {
-             this.previousTotalWorldTime = i;
- 
--            for (int j = 0; j < this.entries.size(); ++j)
--            {
--                PlayerChunkMapEntry playerchunkmapentry = this.entries.get(j);
-+            for (PlayerChunkMapEntry playerchunkmapentry : this.entries) {
-                 playerchunkmapentry.update();
-                 playerchunkmapentry.updateChunkInhabitedTime();
++                    entriesIteraing.set(false);
+                     return (Chunk)this.endOfData();
+                 }
              }
-@@ -157,6 +172,12 @@
+@@ -157,19 +168,20 @@
          {
              long l = System.nanoTime() + 50000000L;
              int k = 49;
-+
+-            Iterator<PlayerChunkMapEntry> iterator = this.entriesWithoutChunks.iterator();
+ 
+-            while (iterator.hasNext())
+-            {
+-                PlayerChunkMapEntry playerchunkmapentry1 = iterator.next();
 +            // Spigot start
 +            org.spigotmc.SlackActivityAccountant activityAccountant = net.minecraft.server.MinecraftServer.getServerInst().slackActivityAccountant;
 +            activityAccountant.startActivity(Math.min(catserver.server.CatServer.getConfig().worldGenMaxTickTime, 18.75) / (18.75 * 2)); // CatServer - 50 * 0.375 = 18.75
 +            // Spigot end
-+
-             Iterator<PlayerChunkMapEntry> iterator = this.entriesWithoutChunks.iterator();
  
-             while (iterator.hasNext())
-@@ -173,32 +194,39 @@
++            for(PlayerChunkMapEntry playerchunkmapentry1 : this.entriesWithoutChunks){
+                 if (playerchunkmapentry1.getChunk() == null)
+                 {
+                     boolean flag = playerchunkmapentry1.hasPlayerMatching(CAN_GENERATE_CHUNKS);
+ 
+                     if (playerchunkmapentry1.providePlayerChunk(flag))
+                     {
+-                        iterator.remove();
++                        this.entriesWithoutChunks.remove(playerchunkmapentry1);
  
                          if (playerchunkmapentry1.sendToPlayers())
                          {
--                            this.pendingSendToPlayers.remove(playerchunkmapentry1);
-+                            if (iterating1.get()){
-+                              aq2.add(playerchunkmapentry1);
-+                            }else {
-+                                this.pendingSendToPlayers.remove(playerchunkmapentry1);
-+                            }
-                         }
+@@ -178,13 +190,19 @@
  
                          --k;
  
@@ -132,77 +117,63 @@
                      }
 +                } else {
 +                    // CraftBukkit - SPIGOT-2891: remove once chunk has been provided
-+                    iterator.remove();
++                    this.entriesWithoutChunks.remove(playerchunkmapentry1);
                  }
              }
++
 +
 +            activityAccountant.endActivity(); // Spigot
          }
  
          if (!this.pendingSendToPlayers.isEmpty())
-         {
-             int i1 = 81;
--            Iterator<PlayerChunkMapEntry> iterator1 = this.pendingSendToPlayers.iterator();
--
--            while (iterator1.hasNext())
--            {
--                PlayerChunkMapEntry playerchunkmapentry3 = iterator1.next();
--
-+            iterating1.set(true);
-+            Iterator<PlayerChunkMapEntry> it = this.pendingSendToPlayers.iterator();
-+            while (it.hasNext()) {
-+                PlayerChunkMapEntry playerchunkmapentry3 = it.next();
-                 if (playerchunkmapentry3.sendToPlayers())
-                 {
--                    iterator1.remove();
-+                    it.remove();
-                     --i1;
- 
-                     if (i1 < 0)
-@@ -207,6 +235,7 @@
-                     }
-                 }
-             }
-+            iterating1.set(false);
-         }
- 
-         if (this.players.isEmpty())
-@@ -231,7 +260,8 @@
+@@ -223,25 +241,41 @@
+     public boolean contains(int chunkX, int chunkZ)
      {
-         return (PlayerChunkMapEntry)this.entryMap.get(getIndex(x, z));
+         long i = getIndex(chunkX, chunkZ);
+-        return this.entryMap.get(i) != null;
++        synchronized (entryMap) {
++            return this.entryMap.get(i) != null;
++        }
      }
--
-+    private CopyOnWriteArrayList<PlayerChunkMapEntry> addqeue = new CopyOnWriteArrayList<>();
-+    private AtomicBoolean iterating = new AtomicBoolean(false);
+ 
+     @Nullable
+     public PlayerChunkMapEntry getEntry(int x, int z)
+     {
+-        return (PlayerChunkMapEntry)this.entryMap.get(getIndex(x, z));
++        synchronized (entryMap) {
++            return (PlayerChunkMapEntry) this.entryMap.get(getIndex(x, z));
++        }
+     }
+ 
      private PlayerChunkMapEntry getOrCreateEntry(int chunkX, int chunkZ)
      {
          long i = getIndex(chunkX, chunkZ);
-@@ -241,7 +271,11 @@
+-        PlayerChunkMapEntry playerchunkmapentry = (PlayerChunkMapEntry)this.entryMap.get(i);
++        PlayerChunkMapEntry playerchunkmapentry = null;
++        synchronized (entryMap){
++            playerchunkmapentry = (PlayerChunkMapEntry)this.entryMap.get(i);
++        }
+ 
+         if (playerchunkmapentry == null)
          {
              playerchunkmapentry = new PlayerChunkMapEntry(this, chunkX, chunkZ);
-             this.entryMap.put(i, playerchunkmapentry);
+-            this.entryMap.put(i, playerchunkmapentry);
 -            this.entries.add(playerchunkmapentry);
-+            if (iterating.get()){
-+                addqeue.add(playerchunkmapentry);
-+            }else{
++            synchronized (entryMap) {
++                this.entryMap.put(i, playerchunkmapentry);
++            }
++            if(!entriesIteraing.get()) {
 +                this.entries.add(playerchunkmapentry);
++            }else{
++                PlayerChunkMapEntry finalPlayerchunkmapentry = playerchunkmapentry;
++                entriesEditQueue.add(()->{
++                    this.entries.add(finalPlayerchunkmapentry);
++                });
 +            }
  
              if (playerchunkmapentry.getChunk() == null)
              {
-@@ -250,15 +284,28 @@
- 
-             if (!playerchunkmapentry.sendToPlayers())
-             {
--                this.pendingSendToPlayers.add(playerchunkmapentry);
-+                if (iterating1.get()){
-+                     aq1.add(playerchunkmapentry);
-+                }else {
-+                    this.pendingSendToPlayers.add(playerchunkmapentry);
-+                }
-             }
-         }
- 
+@@ -257,8 +291,17 @@
          return playerchunkmapentry;
      }
  
@@ -220,7 +191,7 @@
          int i = pos.getX() >> 4;
          int j = pos.getZ() >> 4;
          PlayerChunkMapEntry playerchunkmapentry = this.getEntry(i, j);
-@@ -276,14 +323,22 @@
+@@ -276,14 +319,22 @@
          player.managedPosX = player.posX;
          player.managedPosZ = player.posZ;
  
@@ -244,7 +215,7 @@
          this.players.add(player);
          this.markSortPending();
      }
-@@ -341,6 +396,8 @@
+@@ -341,6 +392,8 @@
              int j1 = i - k;
              int k1 = j - l;
  
@@ -253,7 +224,7 @@
              if (j1 != 0 || k1 != 0)
              {
                  for (int l1 = i - i1; l1 <= i + i1; ++l1)
-@@ -349,7 +406,8 @@
+@@ -349,7 +402,8 @@
                      {
                          if (!this.overlaps(l1, i2, k, l, i1))
                          {
@@ -263,7 +234,7 @@
                          }
  
                          if (!this.overlaps(l1 - j1, i2 - k1, i, j, i1))
-@@ -367,6 +425,12 @@
+@@ -367,6 +421,12 @@
                  player.managedPosX = player.posX;
                  player.managedPosZ = player.posZ;
                  this.markSortPending();
@@ -276,33 +247,32 @@
              }
          }
      }
-@@ -443,24 +507,101 @@
+@@ -443,24 +503,101 @@
  
      public void entryChanged(PlayerChunkMapEntry entry)
      {
 +        org.spigotmc.AsyncCatcher.catchOp("Async Player Chunk Add"); // Paper
          this.dirtyEntries.add(entry);
      }
--
-+    private CopyOnWriteArrayList removeqeue = new CopyOnWriteArrayList();
+ 
      public void removeEntry(PlayerChunkMapEntry entry)
      {
 +        org.spigotmc.AsyncCatcher.catchOp("Async Player Chunk Remove"); // Paper
          ChunkPos chunkpos = entry.getPos();
          long i = getIndex(chunkpos.x, chunkpos.z);
          entry.updateChunkInhabitedTime();
-         this.entryMap.remove(i);
+-        this.entryMap.remove(i);
 -        this.entries.remove(entry);
-+        if (iterating.get()){
-+            removeqeue.add(entry);
-+        }else{this.entries.remove(entry);}
-         this.dirtyEntries.remove(entry);
--        this.pendingSendToPlayers.remove(entry);
-+        if (!iterating1.get()) {
-+            this.pendingSendToPlayers.remove(entry);
-+        }else{
-+            aq2.add(entry);
++        synchronized (entryMap) {
++            this.entryMap.remove(i);
 +        }
++        if(!entriesIteraing.get()) {
++            this.entries.remove(entry);
++        }else{
++            this.entries.remove(entry);
++        }
+         this.dirtyEntries.remove(entry);
+         this.pendingSendToPlayers.remove(entry);
          this.entriesWithoutChunks.remove(entry);
          Chunk chunk = entry.getChunk();
  
