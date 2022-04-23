@@ -339,7 +339,7 @@
                  this.sendToTrackingAndSelf(new SPacketEntityProperties(this.trackedEntity.getEntityId(), set));
              }
  
-@@ -331,74 +344,75 @@
+@@ -331,74 +344,77 @@
          }
      }
  
@@ -408,7 +408,9 @@
 +                            return;
 +                        }
 +                    }
-+                    playerMP.entityRemoveQueue.remove(Integer.valueOf(this.trackedEntity.getEntityId()));
++                    synchronized (playerMP.entityRemoveQueue) {
++                        playerMP.entityRemoveQueue.remove(Integer.valueOf(this.trackedEntity.getEntityId()));
++                    }
 +                    // CraftBukkit end
                      this.trackingPlayers.add(playerMP);
 -                    Packet<?> packet = this.createSpawnPacket();
@@ -451,7 +453,7 @@
                              flag = true;
                          }
                      }
-@@ -407,276 +421,203 @@
+@@ -407,276 +423,203 @@
                      this.lastTrackedEntityMotionY = this.trackedEntity.motionY;
                      this.motionZ = this.trackedEntity.motionZ;
  
