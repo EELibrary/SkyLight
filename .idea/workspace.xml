@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="Fix ClassCastException">
+    <list default="true" id="4228b49c-ded4-4456-a8a8-22a5fc136c7d" name="变更" comment="Fix ClasCastException and a CME Exception">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/entity/player/EntityPlayerMP.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/entity/player/EntityPlayerMP.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/pathfinding/WalkNodeProcessor.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/pathfinding/WalkNodeProcessor.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/util/ClassInheritanceMultiMap.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/util/ClassInheritanceMultiMap.java.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" beforeDir="false" afterPath="$PROJECT_DIR$/patches/net/minecraft/world/World.java.patch" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,13 +80,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/Prawa/Desktop/Catserver"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Prawa/Desktop/Catserver&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Gradle.SkyLight [genPatches]">
     <configuration name="SkyLight [build] (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -340,7 +344,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650628605553</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Fix ClasCastException and a CME Exception">
+      <created>1650672304273</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1650672304273</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -364,6 +375,7 @@
     <MESSAGE value="Debug commit 03" />
     <MESSAGE value="A huge update and rewrite all thing" />
     <MESSAGE value="Fix ClassCastException" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix ClassCastException" />
+    <MESSAGE value="Fix ClasCastException and a CME Exception" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix ClasCastException and a CME Exception" />
   </component>
 </project>
