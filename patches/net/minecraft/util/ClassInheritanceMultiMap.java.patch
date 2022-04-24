@@ -93,7 +93,7 @@
                  this.addForClass(p_add_1_, oclass);
              }
          }
-@@ -76,33 +60,25 @@
+@@ -76,33 +60,27 @@
          return true;
      }
  
@@ -105,11 +105,14 @@
  
 -        if (list == null)
 -        {
-+        if (list == null) {
-             this.map.put(parentClass, Lists.newArrayList(value));
+-            this.map.put(parentClass, Lists.newArrayList(value));
 -        }
 -        else
 -        {
++        if (list == null) {
++            List<T> value1 = new org.skylight.list.IteraingSafelyList();
++            value1.add(value);
++            this.map.put(parentClass,value1);
 +        } else {
              list.add(value);
          }
@@ -137,7 +140,7 @@
                      flag = true;
                  }
              }
-@@ -111,25 +87,17 @@
+@@ -111,25 +89,17 @@
          return flag;
      }
  
@@ -170,7 +173,7 @@
                      Iterator<T> iterator = list.iterator();
                      return Iterators.filter(iterator, clazz);
                  }
-@@ -137,13 +105,11 @@
+@@ -137,13 +107,11 @@
          };
      }
  
